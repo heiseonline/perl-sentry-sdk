@@ -1,0 +1,34 @@
+# https://metacpan.org/pod/Perl::Critic::PolicySummary
+
+severity = cruel
+include = layout
+
+# Ausschluss dieser Policy (s.u.) funktioniert irgendwie nicht. Per exclude
+# schon.
+exclude = CodeLayout::ProhibitParensWithBuiltins
+
+[CodeLayout::RequireTidyCode]
+perltidyrc = .perltidyrc
+
+# Signatures werden fälschlich als Prototypes erkannt:
+# https://github.com/Perl-Critic/Perl-Critic/issues/591
+[-Subroutines::ProhibitSubroutinePrototypes]
+
+[-CodeLayout::ProhibitParensWithBuiltins]
+[-CodeLayout::RequireTrailingCommas]
+[-ControlStructures::ProhibitPostfixControls]
+[-Documentation::RequirePodSections]
+[-ErrorHandling::RequireCarping]
+[-Modules::RequireVersionVar]
+[-References::ProhibitDoubleSigils]
+[-RegularExpressions::RequireDotMatchAnything]
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireLineBoundaryMatching]
+[-Subroutines::ProhibitExplicitReturnUndef]
+[-Subroutines::RequireFinalReturn]
+[-ValuesAndExpressions::ProhibitEmptyQuotes]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+[-ValuesAndExpressions::RequireNumberSeparators]
+
+[Subroutines::ProhibitUnusedPrivateSubroutines]
+allow_name_regex = _build_\w+
