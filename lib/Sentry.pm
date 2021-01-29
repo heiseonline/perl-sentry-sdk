@@ -37,7 +37,8 @@ sub init ($package, $options = {}) {
   $options->{release}              //= $ENV{SENTRY_RELEASE};
   $options->{environment}          //= $ENV{SENTRY_ENVIRONMENT};
   $options->{_metadata}            //= {};
-  $options->{_metadata}{sdk} = {name => 'sentry.perl', packages => []};
+  $options->{_metadata}{sdk}
+    = {name => 'sentry.perl', packages => [], version => 'fixme'};
 
   _init_and_bind($options);
 }

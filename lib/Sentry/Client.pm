@@ -8,14 +8,14 @@ use Sentry::Hub::Scope;
 use Sentry::Integration;
 use Sentry::SourceFileRegistry;
 use Sentry::Transport::Http;
-use Sentry::Util 'uuid4';
+use Sentry::Util qw(uuid4 truncate);
 use Time::HiRes;
 
 has _options              => sub { {} };
 has _transport            => sub { Sentry::Transport::Http->new };
 has _source_file_registry => sub { Sentry::SourceFileRegistry->new };
 has scope                 => sub { Sentry::Hub::Scope->new };
-has integrations          => sub { [] };
+has integrations => sub ($self) { $self->_options->{integrations} // [] };
 
 sub setup_integrations($self) {
   Sentry::Integration->setup($self->integrations);
@@ -107,17 +107,75 @@ sub close ($self, $timeout) { }
 # Same as close difference is that the client is NOT disposed after calling flush
 sub flush ($self, $timeout) { }
 
+sub _normalize_event ($self, $event) {
+  my %event = $event->%*;
+
+  delete $event{error_event_processors};
+  delete $event{event_processors};
+
+  return \%event;
+}
+
+
+sub _apply_client_options ($self, $event) {
+  my $options          = $self->_options;
+  my $max_value_length = $options->{max_value_length} // 250;
+
+  $event->{environment} //= $options->{environment} // 'production';
+  $event->{dist}        //= $options->{dist};
+
+  $event->{message} = truncate($event->{message}, $max_value_length)
+    if $event->{message};
+
+  return;
+}
+
+sub _apply_integrations_metadata ($self, $event) {
+  $event->{sdk} //= {};
+
+  my @integrations = $self->integrations->@*;
+  $event->{sdk}->{integrations} = [map { ref($_) } @integrations]
+    if @integrations;
+}
+
+# Adds common information to events.
+#
+# The information includes release and environment from `options`,
+# breadcrumbs and context (extra, tags and user) from the scope.
+#
+# Information that is already present in the event is never overwritten. For
+# nested objects, such as the context, keys are merged.
+#
+# @param event The original event.
+# @param hint May contain additional information about the original exception.
+# @param scope A scope containing event metadata.
+# @returns A new event with more information.
 sub _prepare_event ($self, $event, $scope, $hint = undef) {
   my %prepared = (
-    $scope->%*, %{$event},
+    $event->%*,
+    sdk       => $self->_options->{_metadata}{sdk},
     platform  => 'perl',
     event_id  => $event->{event_id} // ($hint // {})->{event_id} // uuid4(),
     timestamp => $event->{timestamp} // time,
   );
 
+  $self->_apply_client_options(\%prepared);
+  $self->_apply_integrations_metadata(\%prepared);
+
+  my $final_scope = $scope;
+  if (exists(($hint // {})->{capture_context})) {
+    $final_scope = $scope->clone()->update($hint->{captureconsole});
+  }
+
+  my $result = \%prepared;
+
+  if ($final_scope) {
+    $result = $final_scope->apply_to_event(\%prepared, $hint);
+  }
+
   $scope->apply_to_event(\%prepared, $hint);
 
-  return \%prepared;
+  return $self->_normalize_event(\%prepared);
 }
 
 sub _process_event ($self, $event, $hint, $scope) {

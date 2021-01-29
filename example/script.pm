@@ -3,6 +3,7 @@ use Mojo::Base -strict;
 
 use lib qw(lib example);
 use Mojo::Util 'dumper';
+use MyIntegration;
 use Sentry;
 use Sentry::Hub;
 use Sentry::Severity;
@@ -11,7 +12,13 @@ use Try::Tiny;
 sub main {
   my $dsn = 'http://b61a335479ff48529d773343287bcdad@localhost:9000/2';
 
-  Sentry->init({dsn => $dsn});
+  Sentry->init({
+    dsn          => $dsn,
+    environment  => 'my environment',
+    release      => '1.0.0',
+    dist         => '12345',
+    integrations => [MyIntegration->new],
+  });
 
   Sentry->configure_scope(sub {
     my $scope = shift;

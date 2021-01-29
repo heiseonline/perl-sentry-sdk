@@ -83,10 +83,16 @@ sub apply_to_event ($self, $event, $hint = undef) {
   foreach my $processor ($self->event_processors->@*) {
     $processor->($event, $hint);
   }
+
+  return $event;
 }
 
 sub clone ($self) {
   Clone::clone($self);
+}
+
+sub update ($self, $fields) {
+  $self->$_($fields->{$_}) for keys $fields->%*;
 }
 
 1;
