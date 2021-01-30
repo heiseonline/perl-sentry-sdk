@@ -36,7 +36,7 @@ sub send ($self, $payload) {
   my $tx = $self->_http->post($self->_sentry_url => $self->_headers,
     json => $payload);
 
-  warn 'request done. code: ' . $tx->res->code;
+  warn 'Sentry request done. code: ' . $tx->res->code;
   return $tx->res->json;
 }
 
