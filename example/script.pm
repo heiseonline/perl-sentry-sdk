@@ -18,6 +18,7 @@ sub main {
     release      => '1.0.0',
     dist         => '12345',
     integrations => [MyIntegration->new],
+    debug        => 1,
   });
 
   Sentry->configure_scope(sub {
@@ -29,7 +30,7 @@ sub main {
     $scope->set_tag(bar => 'baz');
   });
   Sentry->add_breadcrumb({
-    message => 'my message', level => Sentry::Severity->Warning,
+    message => 'my breadcrumb (warning)', level => Sentry::Severity->Warning,
   });
 
   # Integration SDK
@@ -45,7 +46,7 @@ sub main {
     $hub->capture_message('ich bin eine SDK integration message');
   });
 
-  Sentry->capture_message('hohoho', Sentry::Severity->Warning);
+  Sentry->capture_message('ich bin eine separate message');
 
   use ScriptLib;
   my $s = ScriptLib->new(foo => 'my foo');
