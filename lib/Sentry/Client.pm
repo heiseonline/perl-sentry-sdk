@@ -6,10 +6,12 @@ use Mojo::Home;
 use Mojo::Util 'dumper';
 use Sentry::Hub::Scope;
 use Sentry::Integration;
+use Sentry::Logger 'logger';
 use Sentry::SourceFileRegistry;
 use Sentry::Transport::Http;
 use Sentry::Util qw(uuid4 truncate);
 use Time::HiRes;
+use Try::Tiny;
 
 has _options              => sub { {} };
 has _transport            => sub { Sentry::Transport::Http->new };
@@ -93,8 +95,16 @@ sub capture_exception ($self, $exception, $hint = undef, $scope = undef) {
 }
 
 sub _capture_event ($self, $event, $hint = undef, $scope = undef) {
-  my $final_event = $self->_process_event($event, $hint, $scope);
-  return $final_event->{event_id};
+  my $event_id;
+
+  try {
+    $event_id = $self->_process_event($event, $hint, $scope)->{event_id};
+  }
+  catch {
+    logger->error($_);
+  };
+
+  return $event_id;
 }
 
 # Captures the event by merging it with other data with defaults from the

@@ -1,7 +1,10 @@
 package Sentry::Logger;
 use Mojo::Base -base, -signatures;
 
+use Exporter qw(import);
 use List::Util 'any';
+
+our @EXPORT_OK = qw(logger);
 
 has context         => 'Sentry';
 has active_contexts => sub { [split(/,/, $ENV{DEBUG})] };
@@ -29,6 +32,13 @@ sub error ($self, $message, $context = $self->context) {
 
 sub enable($self) {
   $self->enabled(1);
+}
+
+my $Instance;
+
+sub logger() {
+  $Instance //= Sentry::Logger->new;
+  return $Instance;
 }
 
 1;
