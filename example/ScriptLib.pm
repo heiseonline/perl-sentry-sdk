@@ -3,6 +3,7 @@ use Mojo::Base -base, -signatures;
 
 use Carp 'croak';
 use Mojo::UserAgent;
+use Mojo::Util 'dumper';
 use Sentry;
 use Sentry::Severity;
 
@@ -14,17 +15,17 @@ sub foo1 ($self, $value) {
 }
 
 sub foo2 ($self, $value, $x = undef) {
-  $self->ua->get('https://google.com');
+  $self->ua->get('https://www.google.com/?rnd=' . rand());
 
   my $url = 'https://www.heise.de/select/?rnd=' . rand();
   my $tx  = $self->ua->get($url);
-  warn "request $url done. Code: " . $tx->res->code;
   Sentry->add_breadcrumb({
     message  => 'breadcrumb in foo2',
     type     => 'debug',
     category => 'ui.click',
     data     => {some => 'data', bla => ['a', 'b']}
   });
+
   $self->foo3;
 }
 

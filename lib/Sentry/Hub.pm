@@ -2,8 +2,9 @@ package Sentry::Hub;
 use Mojo::Base -base, -signatures;
 
 use Mojo::Util 'dumper';
-use Sentry::Severity;
 use Sentry::Hub::Scope;
+use Sentry::Logger;
+use Sentry::Severity;
 use Sentry::Util qw(uuid4);
 use Try::Tiny;
 
@@ -12,6 +13,7 @@ my $Instance;
 has _last_event_id => undef;
 has _stack         => sub { [{}] };
 has client         => undef;
+has logger         => sub { Sentry::Logger->new };
 has scopes         => sub { [Sentry::Hub::Scope->new] };
 
 # has _root_scope =>

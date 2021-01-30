@@ -4,6 +4,7 @@ use Mojo::Base -base, -signatures;
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Readonly;
+use Sentry::Hub;
 
 Readonly my $SENTRY_API_VERSION => '7';
 
@@ -36,7 +37,13 @@ sub send ($self, $payload) {
   my $tx = $self->_http->post($self->_sentry_url => $self->_headers,
     json => $payload);
 
-  warn 'Sentry request done. code: ' . $tx->res->code;
+  Sentry::Hub->get_current_hub()->logger->log(
+    sprintf(
+      qq{Sentry request done. Payload: %s\nCode: %d},
+      dumper($payload), $tx->res->code
+    ),
+    __PACKAGE__
+  );
   return $tx->res->json;
 }
 
