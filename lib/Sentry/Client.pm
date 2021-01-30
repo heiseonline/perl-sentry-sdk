@@ -2,9 +2,9 @@ package Sentry::Client;
 use Mojo::Base -base, -signatures;
 
 use Devel::StackTrace;
+use Mojo::Home;
 use Mojo::Util 'dumper';
 use Sentry::Hub::Scope;
-
 use Sentry::Integration;
 use Sentry::SourceFileRegistry;
 use Sentry::Transport::Http;
@@ -48,6 +48,10 @@ sub _map_file_to_context ($self, $file, $line) {
   return $self->_source_file_registry->get_context_lines($file, $line);
 }
 
+sub is_file_of_app($frame) {
+  return scalar $frame->filename !~ m{\A /}xms;
+}
+
 sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
   my $trace = Devel::StackTrace->new(
     frame_filter        => sub ($frame) { $frame->{caller}->[0] !~ /^Sentry/ },
@@ -56,7 +60,7 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
 
   # warn dumper($trace);
   my @frames = map { {
-    in_app    => \1,
+    in_app    => \is_file_of_app($_),
     abs_path  => $_->filename,
     file_name => 'bla',
     vars      => [$_->args],
