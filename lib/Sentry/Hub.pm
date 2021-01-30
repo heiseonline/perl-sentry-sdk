@@ -9,10 +9,10 @@ use Try::Tiny;
 
 my $Instance;
 
-has _event_id => uuid4();
-has _stack    => sub { [{}] };
-has client    => undef;
-has scopes    => sub { [Sentry::Hub::Scope->new] };
+has _last_event_id => undef;
+has _stack         => sub { [{}] };
+has client         => undef;
+has scopes         => sub { [Sentry::Hub::Scope->new] };
 
 # has _root_scope =>
 
@@ -72,10 +72,15 @@ sub _invoke_client ($self, $method, @args) {
   }
 }
 
+sub _new_event_id($self) {
+  $self->_last_event_id(uuid4());
+  return $self->_last_event_id;
+}
+
 sub capture_message ($self, $message, $level = Sentry::Severity->Info,
   $hint = undef)
 {
-  my $event_id = $self->_event_id;
+  my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_message', $message, $level,
     {event_id => $event_id});
@@ -84,7 +89,7 @@ sub capture_message ($self, $message, $level = Sentry::Severity->Info,
 }
 
 sub capture_exception ($self, $exception, $hint = undef) {
-  my $event_id = $self->_event_id;
+  my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_exception', $exception,
     {event_id => $event_id});

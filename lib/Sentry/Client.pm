@@ -198,12 +198,6 @@ sub _process_event ($self, $event, $hint, $scope) {
 }
 
 sub _send_event ($self, $event) {
-
-  # DEBUG
-  $event->{event_id} = uuid4();
-
-  # /DEBUG
-
   $self->_transport->send($event);
   return;
 }
