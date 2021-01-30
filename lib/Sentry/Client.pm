@@ -176,20 +176,26 @@ sub _prepare_event ($self, $event, $scope, $hint = undef) {
   $self->_apply_client_options(\%prepared);
   $self->_apply_integrations_metadata(\%prepared);
 
+  # If we have scope given to us, use it as the base for further modifications.
+  # This allows us to prevent unnecessary copying of data if `capture_context`
+  # is not provided.
   my $final_scope = $scope;
   if (exists(($hint // {})->{capture_context})) {
     $final_scope = $scope->clone()->update($hint->{captureconsole});
   }
 
+  # We prepare the result here with a resolved Event.
   my $result = \%prepared;
 
+  # This should be the last thing called, since we want that
+  # {@link Hub.addEventProcessor} gets the finished prepared event.
   if ($final_scope) {
+
+    # In case we have a hub we reassign it.
     $result = $final_scope->apply_to_event(\%prepared, $hint);
   }
 
-  $scope->apply_to_event(\%prepared, $hint);
-
-  return $self->_normalize_event(\%prepared);
+  return $self->_normalize_event($result);
 }
 
 sub _process_event ($self, $event, $hint, $scope) {

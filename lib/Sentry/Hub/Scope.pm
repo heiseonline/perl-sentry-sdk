@@ -4,18 +4,22 @@ use Mojo::Base -base, -signatures;
 use Clone qw();
 use Mojo::Util 'dumper';
 use Sentry::Severity;
+use Sentry::Util 'merge';
 use Time::HiRes;
 
+has _span                  => undef;
 has breadcrumbs            => sub { [] };
-has context                => sub { {} };
+has contexts               => sub { {} };
 has error_event_processors => sub { [] };
 has event_processors       => sub { [] };
 has extra                  => sub { {} };
-has fingerprints           => sub { [] };
+has fingerprint            => sub { [] };
 has level                  => Sentry::Severity->Info;
-has tags             => sub { {} };
-has transaction_name => undef;
-has user             => undef;
+has tags                   => sub { {} };
+has transaction_name       => undef;
+has user                   => undef;
+
+sub set_span { }
 
 sub set_user ($self, $user) {
   $self->user($user);
@@ -37,8 +41,17 @@ sub set_tags ($self, $tags) {
   $self->tags = {%{$self->tags}, %{$tags}};
 }
 
-sub set_context ($self, $context) {
-  $self->context($context);
+sub set_context ($self, $key, $context = undef) {
+  if (not defined $context) {
+    delete $self->contexts->{$key};
+  }
+  else {
+    $self->contexts->{$key} = $context;
+  }
+
+  # $self->_notify_scope_listeners();
+
+  return $self;
 }
 
 sub set_level ($self, $level) {
@@ -49,8 +62,8 @@ sub set_transaction ($self, $transaction_name) {
   $self->transaction_name($transaction_name);
 }
 
-sub set_fingerprint ($self, $fingerprints) {
-  $self->fingerprints($fingerprints);
+sub set_fingerprint ($self, $fingerprint) {
+  $self->fingerprint($fingerprint);
 }
 
 sub add_event_processor ($self, $event_processor) {
@@ -76,10 +89,47 @@ sub clear_breadcrumbs($self) {
   $self->breadcrumbs([]);
 }
 
+# Applies fingerprint from the scope to the event if there's one,
+# uses message if there's one instead or get rid of empty fingerprint
+sub _apply_fingerprint ($self, $event) {
+  $event->{fingerprint} //= [];
+
+  $event->{fingerprint} = [$event->{fingerprint}]
+    if ref($event->{fingerprint} ne 'ARRAY');
+
+  $event->{fingerprint} = [$event->{fingerprint}->@*, $self->fingerprint->@*];
+
+  delete $event->{fingerprint} unless scalar $event->{fingerprint}->@*;
+}
+
 # Applies the scope data to the given event object. This also applies the event
 # processors stored in the scope internally. Some implementations might want to
 # set a max breadcrumbs count here.
 sub apply_to_event ($self, $event, $hint = undef) {
+  merge($event, $self, 'extra')    if $self->extra;
+  merge($event, $self, 'tags')     if $self->tags;
+  merge($event, $self, 'user')     if $self->user;
+  merge($event, $self, 'contexts') if $self->contexts;
+  $event->{level}       = $self->level       if $self->level;
+  $event->{transaction} = $self->transaction if $self->transaction_name;
+
+  if ($self->_span) {
+    $event->{contexts} = {
+      trace => $self->_span->get_trace_context(),
+      ($event->{contexts} // {})->%*
+    };
+
+    if (my $transaction_name = $self->_span->transaction->name) {
+      $event->{tags}
+        = {transaction => $transaction_name, ($event->{tags} // {})->%*};
+    }
+  }
+
+  $self->_apply_fingerprint($event);
+
+  $event->{breadcrumbs}
+    = [($event->{breadcrumbs} // [])->@*, $self->breadcrumbs->@*];
+
   foreach my $processor ($self->event_processors->@*) {
     $processor->($event, $hint);
   }
