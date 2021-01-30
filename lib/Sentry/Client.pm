@@ -75,7 +75,7 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
   return {
     exception => {
       values => [{
-        type   => 'my type',
+        type   => ref($exception) || $exception,
         value  => $exception,
         module => 'module',
 
