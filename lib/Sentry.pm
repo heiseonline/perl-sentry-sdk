@@ -5,11 +5,6 @@ use Mojo::Util 'dumper';
 use Sentry::Client;
 use Sentry::Hub;
 
-my $Instance;
-
-has current_hub => sub($self) { Sentry::Hub->new(options => $self->options) };
-has options     => sub        { {} };
-
 sub _call_on_hub ($method, @args) {
   my $hub = Sentry::Hub->get_current_hub();
 
@@ -28,9 +23,6 @@ sub _init_and_bind ($options) {
 }
 
 sub init ($package, $options = {}) {
-
-  # $Instance //= $package->new(options => $options);
-
   $options->{default_integrations} //= [];
   $options->{dsn}                  //= $ENV{SENTRY_DSN};
   $options->{traces_sample_rate}   //= $ENV{SENTRY_TRACES_SAMPLE_RATE};
@@ -70,11 +62,8 @@ sub add_breadcrumb ($package, $crumb) {
   Sentry::Hub->get_current_hub()->add_breadcrumb($crumb);
 }
 
-sub start_transaction ($package, $options) {
-  my $transaction;
-
-  # $trarnsaction->finish();
-  return $transaction;
+sub start_transaction ($package, $context, $custom_sampling_context = undef) {
+  _call_on_hub('start_transaction', {$context->%*}, $custom_sampling_context);
 }
 
 1;
