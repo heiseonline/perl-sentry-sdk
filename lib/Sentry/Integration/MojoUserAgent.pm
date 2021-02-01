@@ -20,6 +20,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
         if $tx->req->headers->header('x-sentry-auth');
 
       my $hub = $get_current_hub->();
+
       $hub->add_breadcrumb({
         type     => 'http',
         category => 'Mojo::UserAgent',
@@ -28,10 +29,12 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           method      => $tx->req->method,
           status_code => $tx->res->code,
         }
-      });
+      })
+        if $self->breadcrumbs;
 
       my $span;
-      if (my $parent_span = $hub->get_scope()->get_span) {
+
+      if ($self->tracing && (my $parent_span = $hub->get_scope()->get_span)) {
         $span = $parent_span->start_child({
           op          => 'http',
           name        => 'My Transaction',
@@ -42,12 +45,15 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
             headers => $tx->req->headers,
           },
         });
+
       }
 
       my $result = $orig->($ua, $tx, $cb);
 
-      $span->set_http_status($tx->res->code);
-      $span->finish();
+      if ($self->tracing) {
+        $span->set_http_status($tx->res->code);
+        $span->finish();
+      }
 
       return $result;
     }
