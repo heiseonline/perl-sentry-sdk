@@ -2,9 +2,11 @@ package Sentry::Util;
 use Mojo::Base -strict, -signatures;
 
 use Exporter qw(import);
+use Mojo::Loader qw(load_class);
+use Mojo::Util qw(dumper monkey_patch);
 use UUID::Tiny ':std';
 
-our @EXPORT_OK = qw(uuid4 truncate merge);
+our @EXPORT_OK = qw(uuid4 truncate merge around);
 
 sub uuid4 {
   my $uuid = create_uuid_as_string(UUID_V4);
@@ -20,6 +22,24 @@ sub truncate ($string, $max = 0) {
 
 sub merge ($target, $source, $key) {
   $target->{$key} = {($target->{$key} // {})->%*, ($source->{$key} // {})->%*};
+}
+
+my %Patched = ();
+
+sub around ($package, $method, $cb) {
+  my $key = $package . ':' . $method;
+  return if $Patched{$key};
+
+  if (my $exception = load_class $package) {
+    warn $exception;
+    return;
+  }
+
+  my $orig = $package->can($method);
+
+  monkey_patch $package, $method => sub { $cb->($orig, @_) };
+
+  $Patched{$key} = 1;
 }
 
 1;

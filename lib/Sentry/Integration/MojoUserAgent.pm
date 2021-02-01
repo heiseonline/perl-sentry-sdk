@@ -1,42 +1,11 @@
 package Sentry::Integration::MojoUserAgent;
 use Mojo::Base 'Sentry::Integration::Base', -signatures;
 
-use Mojo::Loader qw(load_class);
-use Mojo::Util qw(dumper monkey_patch);
-use Sub::Util 'set_subname';
+use Mojo::Util qw(dumper);
+use Sentry::Util 'around';
 
 has breadcrumbs => 1;
 has tracing     => 1;
-
-my %Patched = ();
-
-sub around ($package, $method, $cb) {
-  my $key = $package . ':' . $method;
-  return if $Patched{$key};
-
-  if (my $exception = load_class $package) {
-    warn $exception;
-    return;
-  }
-
-  my $orig = $package->can($method);
-  warn 'PATCH';
-  monkey_patch $package, $method => sub { $cb->($orig, @_) };
-
-  $Patched{$key} = 1;
-}
-
-sub measure ($cb, @args) {
-  use Time::HiRes 'time';
-  my $t0     = time;
-  my $result = $cb->(@args);
-  return {
-    return_value => $result,
-    start        => $t0,
-    end          => time,
-    duration     => (time - $t0) * 1000,
-  };
-}
 
 sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
   return if (!$self->breadcrumbs && !$self->tracing);
@@ -75,12 +44,12 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
         });
       }
 
-      my $result = measure($orig, $ua, $tx, $cb);
+      my $result = $orig->($ua, $tx, $cb);
 
       $span->set_http_status($tx->res->code);
       $span->finish();
 
-      return $result->{return_value};
+      return $result;
     }
   );
 
