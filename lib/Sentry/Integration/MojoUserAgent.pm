@@ -46,6 +46,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           url         => $tx->req->url->to_string,
           method      => $tx->req->method,
           status_code => $tx->res->code,
+          headers     => $tx->res->headers,
         }
       })
         if $self->breadcrumbs;

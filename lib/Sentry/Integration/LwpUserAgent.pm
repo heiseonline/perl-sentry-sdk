@@ -42,10 +42,9 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
         type     => 'http',
         category => 'LWP::UserAgent',
         data     => {
-          url    => $request->uri,
-          method => $request->method,
-
-          # status_code => $tx->res->code,
+          url         => $request->uri,
+          method      => $request->method,
+          status_code => $result->code,
         }
       })
         if $self->breadcrumbs;
