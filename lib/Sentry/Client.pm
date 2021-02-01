@@ -46,6 +46,12 @@ sub capture_message ($self, $message, $level = undef, $hint = undef,
   return $self->_capture_event($event, $hint, $scope);
 }
 
+sub capture_event ($self, $event, $hint = undef, $scope = undef) {
+  my $event_id = ($hint // {})->{event_id};
+
+  return $self->_capture_event($event, $hint, $scope);
+}
+
 sub _map_file_to_context ($self, $file, $line) {
   return $self->_source_file_registry->get_context_lines($file, $line);
 }
@@ -121,13 +127,15 @@ sub close ($self, $timeout) { }
 # Same as close difference is that the client is NOT disposed after calling flush
 sub flush ($self, $timeout) { }
 
+# Applies `normalize` function on necessary `Event` attributes to make them safe for serialization.
+# Normalized keys:
+# - `breadcrumbs.data`
+# - `user`
+# - `contexts`
+# - `extra`
 sub _normalize_event ($self, $event) {
-  my %event = $event->%*;
-
-  delete $event{error_event_processors};
-  delete $event{event_processors};
-
-  return \%event;
+  my %normalized = ($event->%*,);
+  return \%normalized;
 }
 
 
@@ -201,12 +209,10 @@ sub _prepare_event ($self, $event, $scope, $hint = undef) {
 sub _process_event ($self, $event, $hint, $scope) {
   my $prepared = $self->_prepare_event($event, $scope, $hint);
 
-  my $is_transaction = $event->{type} // '' eq 'transaction';
+  my $is_transaction = ($event->{type} // '') eq 'transaction';
 
   die 'An event processor returned undef, will not send event.'
     unless $prepared;
-
-  return $prepared if $is_transaction;
 
   $self->_send_event($prepared);
 

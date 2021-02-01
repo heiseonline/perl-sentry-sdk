@@ -48,7 +48,9 @@ sub capture_message ($self, $message, $capture_context = undef) {
   );
 }
 
-sub capture_event ($package, $event) { }
+sub capture_event ($package, $event) {
+  _call_on_hub('capture_exception', $event);
+}
 
 sub capture_exception ($package, $exception, $capture_context = undef) {
   _call_on_hub('capture_exception', $exception, $capture_context);
@@ -63,7 +65,7 @@ sub add_breadcrumb ($package, $crumb) {
 }
 
 sub start_transaction ($package, $context, $custom_sampling_context = undef) {
-  _call_on_hub('start_transaction', {$context->%*}, $custom_sampling_context);
+  return _call_on_hub('start_transaction', $context, $custom_sampling_context);
 }
 
 1;

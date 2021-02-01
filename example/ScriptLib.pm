@@ -16,9 +16,13 @@ sub foo1 ($self, $value) {
 
 sub foo2 ($self, $value, $x = undef) {
   $self->ua->get('https://www.google.com/?rnd=' . rand());
+  $self->ua->get('https://www.google.com/?rnd=' . rand());
+  $self->ua->get('https://www.google.com/?rnd=' . rand());
+  $self->ua->get('https://www.google.com/?rnd=' . rand());
 
   my $url = 'https://www.heise.de/select/?rnd=' . rand();
   my $tx  = $self->ua->get($url);
+
   Sentry->add_breadcrumb({
     message  => 'breadcrumb in foo2',
     type     => 'debug',
@@ -42,7 +46,7 @@ sub foo3 {
     }
   });
 
-  die 'exception aus ScriptLib.pm';
+  # die 'exception aus ScriptLib.pm';
 
   # croak 'exception aus ScriptLib.pm';
 }

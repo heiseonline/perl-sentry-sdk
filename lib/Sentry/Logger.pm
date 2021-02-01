@@ -7,7 +7,7 @@ use List::Util 'any';
 our @EXPORT_OK = qw(logger);
 
 has context         => 'Sentry';
-has active_contexts => sub { [split(/,/, $ENV{DEBUG})] };
+has active_contexts => sub { [split(/,/, $ENV{DEBUG} // '')] };
 
 sub _should_print ($self, $context) {
   return any { $context =~ $_ } $self->active_contexts->@*;

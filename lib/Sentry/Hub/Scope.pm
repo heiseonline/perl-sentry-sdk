@@ -4,10 +4,10 @@ use Mojo::Base -base, -signatures;
 use Clone qw();
 use Mojo::Util 'dumper';
 use Sentry::Severity;
+use Sentry::Tracing::Span;
 use Sentry::Util 'merge';
 use Time::HiRes;
 
-has _span                  => undef;
 has breadcrumbs            => sub { [] };
 has contexts               => sub { {} };
 has error_event_processors => sub { [] };
@@ -15,11 +15,15 @@ has event_processors       => sub { [] };
 has extra                  => sub { {} };
 has fingerprint            => sub { [] };
 has level                  => Sentry::Severity->Info;
-has tags                   => sub { {} };
-has transaction_name       => undef;
-has user                   => undef;
+has span                   => undef;
+has tags             => sub { {} };
+has transaction_name => undef;
+has user             => undef;
 
-sub set_span { }
+sub set_span ($self, $span) {
+  $self->span($span);
+  return $self;
+}
 
 sub set_user ($self, $user) {
   $self->user($user);
@@ -58,8 +62,13 @@ sub set_level ($self, $level) {
   $self->level($level);
 }
 
-sub set_transaction ($self, $transaction_name) {
-  $self->transaction_name($transaction_name);
+sub set_transaction_name ($self, $name) {
+  $self->transaction_name($name);
+  return $self;
+}
+
+sub get_span($self) {
+  return $self->span;
 }
 
 sub set_fingerprint ($self, $fingerprint) {
@@ -113,13 +122,13 @@ sub apply_to_event ($self, $event, $hint = undef) {
   $event->{level}       = $self->level       if $self->level;
   $event->{transaction} = $self->transaction if $self->transaction_name;
 
-  if ($self->_span) {
+  if ($self->span) {
     $event->{contexts} = {
-      trace => $self->_span->get_trace_context(),
+      trace => $self->span->get_trace_context(),
       ($event->{contexts} // {})->%*
     };
 
-    if (my $transaction_name = $self->_span->transaction->name) {
+    if (my $transaction_name = $self->span->transaction->name) {
       $event->{tags}
         = {transaction => $transaction_name, ($event->{tags} // {})->%*};
     }

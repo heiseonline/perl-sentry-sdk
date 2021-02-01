@@ -5,6 +5,7 @@ use Mojo::Util 'dumper';
 use Sentry::Hub::Scope;
 use Sentry::Logger;
 use Sentry::Severity;
+use Sentry::Tracing::Transaction;
 use Sentry::Util qw(uuid4);
 use Try::Tiny;
 
@@ -62,6 +63,10 @@ sub with_scope ($self, $cb) {
   };
 }
 
+sub get_scope($self) {
+  return $self->get_current_scope;
+}
+
 sub _invoke_client ($self, $method, @args) {
   my $client = $self->client;
   my $scope  = $self->get_current_scope;
@@ -99,12 +104,25 @@ sub capture_exception ($self, $exception, $hint = undef) {
   return $event_id;
 }
 
+sub capture_event ($self, $event, $hint = {}) {
+  my $event_id = $self->_new_event_id();
+
+  $self->_invoke_client('capture_event', $event,
+    {$hint->%*, event_id => $event_id});
+
+  return $event_id;
+}
+
 sub add_breadcrumb ($self, $crumb, $hint = undef) {
   $self->get_current_scope->add_breadcrumb($crumb);
 }
 
 sub run ($self, $cb) {
   $cb->($self);
+}
+
+sub start_transaction ($self, $context, $custom_sampling_context = undef) {
+  return Sentry::Tracing::Transaction->new({$context->%*, _hub => $self});
 }
 
 1;

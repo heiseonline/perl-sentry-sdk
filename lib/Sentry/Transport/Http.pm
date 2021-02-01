@@ -4,6 +4,7 @@ use Mojo::Base -base, -signatures;
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Readonly;
+use Sentry::Envelope;
 use Sentry::Hub;
 use Sentry::Logger 'logger';
 
@@ -29,22 +30,39 @@ has _headers       => sub($self) {
   };
 };
 has _sentry_url =>
-  sub ($self) { 'http://localhost:9000/api/' . $self->_project . '/store/' };
+  sub ($self) { 'http://localhost:9000/api/' . $self->_project };
 
 sub send ($self, $payload) {
+  my $is_transaction = ($payload->{type} // '') eq 'transaction';
+  my $endpoint       = $is_transaction ? 'envelope' : 'store';
+  my $tx;
+  my $url = $self->_sentry_url . "/$endpoint/";
 
-  # warn 'Payload: ' . dumper($payload);
-
-  my $tx = $self->_http->post($self->_sentry_url => $self->_headers,
-    json => $payload);
+  if ($is_transaction) {
+    my $envelope = Sentry::Envelope->new(
+      event_id => $payload->{event_id},
+      body     => $payload,
+    );
+    $payload = $envelope->serialize;
+    $tx      = $self->_http->post($url => $self->_headers, $payload);
+  }
+  else {
+    $tx = $self->_http->post($url => $self->_headers, json => $payload);
+  }
 
   logger->log(
     sprintf(
-      qq{Sentry request done. Payload: %s\nCode: %d},
-      dumper($payload), $tx->res->code
+      qq{Sentry request done. Payload: \n<<<<<<<<<<<<<<\n%s\n<<<<<<<<<<<<<<\nCode: %d},
+      ref($payload) ? dumper($payload) : $payload,
+      $tx->res->code
     ),
     __PACKAGE__
   );
+
+  if ($tx->res->code == 400) {
+    logger->error($tx->res->body);
+  }
+
   return $tx->res->json;
 }
 

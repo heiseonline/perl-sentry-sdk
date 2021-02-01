@@ -1,5 +1,5 @@
 #!/usr/bin/env perl
-use Mojo::Base -strict;
+use Mojo::Base -strict, -signatures;
 
 use lib qw(lib example);
 use Mojo::Util 'dumper';
@@ -21,41 +21,48 @@ sub main {
     debug        => 1,
   });
 
-  Sentry->configure_scope(sub {
-    my $scope = shift;
+  Sentry->configure_scope(sub($scope) {
     $scope->set_tag(foo => 'bar');
   });
-  Sentry->configure_scope(sub {
-    my $scope = shift;
+  Sentry->configure_scope(sub($scope) {
     $scope->set_tag(bar => 'baz');
   });
   Sentry->add_breadcrumb({
     message => 'my breadcrumb (warning)', level => Sentry::Severity->Warning,
   });
 
-  # Integration SDK
-  my $hub = Sentry::Hub->get_current_hub();
-  $hub->with_scope(sub {
-    my $scope = shift;
-    $scope->set_extra(arguments => [1, 2, 3]);
-    $scope->add_breadcrumb({
-      type     => 'navigation',
-      category => 'navigation',
-      data     => {from => '/a', to => '/b'}
-    });
-    $hub->capture_message('ich bin eine SDK integration message');
+  # # Integration SDK
+  # my $hub = Sentry::Hub->get_current_hub();
+  # $hub->with_scope(sub {
+  #   my $scope = shift;
+  #   $scope->set_extra(arguments => [1, 2, 3]);
+  #   $scope->add_breadcrumb({
+  #     type     => 'navigation',
+  #     category => 'navigation',
+  #     data     => {from => '/a', to => '/b'}
+  #   });
+  #   $hub->capture_message('ich bin eine SDK integration message');
+  # });
+
+  # Sentry->capture_message('ich bin eine separate message');
+
+  my $transaction
+    = Sentry->start_transaction({name => 'aaa', op => 'http.server',},
+    {request => {url => '/foo/bar', query => {bla => 'blubb'}}});
+  Sentry->configure_scope(sub($scope) {
+    $scope->set_span($transaction);
   });
-
-  Sentry->capture_message('ich bin eine separate message');
-
-  use ScriptLib;
-  my $s = ScriptLib->new(foo => 'my foo');
   try {
+    use ScriptLib;
+    my $s = ScriptLib->new(foo => 'my foo');
     $s->foo1('foo1 value');
   }
   catch {
     Sentry->capture_exception($_);
   };
+
+  $transaction->set_http_status(200);
+  $transaction->finish();
 }
 
 main();

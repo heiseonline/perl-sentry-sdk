@@ -30,7 +30,12 @@ sub measure ($cb, @args) {
   use Time::HiRes 'time';
   my $t0     = time;
   my $result = $cb->(@args);
-  return {return_value => $result, duration => (time - $t0) * 1000};
+  return {
+    return_value => $result,
+    start        => $t0,
+    end          => time,
+    duration     => (time - $t0) * 1000,
+  };
 }
 
 sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
@@ -45,22 +50,35 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
       return $orig->($ua, $tx, $cb)
         if $tx->req->headers->header('x-sentry-auth');
 
-      my $result = measure($orig, $ua, $tx, $cb);
-
       my $hub = $get_current_hub->();
       $hub->add_breadcrumb({
         type     => 'http',
-        category => 'xhr',
+        category => 'Mojo::UserAgent',
         data     => {
           url         => $tx->req->url->to_string,
           method      => $tx->req->method,
           status_code => $tx->res->code,
-          reason      => "OK"
         }
       });
 
-      # warn "### DURATION: " . $result->{duration} . "($url)";
-      # warn dumper($tx->req->headers);
+      my $span;
+      if (my $parent_span = $hub->get_scope()->get_span) {
+        $span = $parent_span->start_child({
+          op          => 'http',
+          name        => 'My Transaction',
+          description => $tx->req->method . ' ' . $tx->req->url->to_string,
+          data        => {
+            url     => $tx->req->url->to_string,
+            method  => $tx->req->method,
+            headers => $tx->req->headers,
+          },
+        });
+      }
+
+      my $result = measure($orig, $ua, $tx, $cb);
+
+      $span->set_http_status($tx->res->code);
+      $span->finish();
 
       return $result->{return_value};
     }
