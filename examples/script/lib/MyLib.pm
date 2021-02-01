@@ -46,7 +46,7 @@ sub foo3 {
     }
   });
 
-  # die 'exception aus ScriptLib.pm';
+  die 'exception aus ScriptLib.pm';
 
   # croak 'exception aus ScriptLib.pm';
 }
