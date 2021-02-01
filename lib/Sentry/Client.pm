@@ -1,22 +1,21 @@
 package Sentry::Client;
 use Mojo::Base -base, -signatures;
 
-use Devel::StackTrace;
 use Mojo::Home;
 use Mojo::Util 'dumper';
 use Sentry::Hub::Scope;
 use Sentry::Integration;
 use Sentry::Logger 'logger';
 use Sentry::SourceFileRegistry;
+use Sentry::Stacktrace;
 use Sentry::Transport::Http;
 use Sentry::Util qw(uuid4 truncate);
 use Time::HiRes;
 use Try::Tiny;
 
-has _options              => sub { {} };
-has _transport            => sub { Sentry::Transport::Http->new };
-has _source_file_registry => sub { Sentry::SourceFileRegistry->new };
-has scope                 => sub { Sentry::Hub::Scope->new };
+has _options     => sub         { {} };
+has _transport   => sub         { Sentry::Transport::Http->new };
+has scope        => sub         { Sentry::Hub::Scope->new };
 has integrations => sub ($self) { $self->_options->{integrations} // [] };
 
 sub setup_integrations($self) {
@@ -60,35 +59,25 @@ sub is_file_of_app($frame) {
   return scalar $frame->filename !~ m{\A /}xms;
 }
 
+sub _die { CORE::die ref $_[0] ? $_[0] : Mojo::Exception->new(shift)->trace }
+
 sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
-  my $trace = Devel::StackTrace->new(
-    frame_filter        => sub ($frame) { $frame->{caller}->[0] !~ /^Sentry/ },
-    filter_frames_early => 1,
-  );
+  if (!ref($exception)) {
+    $exception = Mojo::Exception->new($exception)->trace;
+  }
 
-  # warn dumper($trace);
-  my @frames = map { {
-    in_app    => \is_file_of_app($_),
-    abs_path  => $_->filename,
-    file_name => 'bla',
-    vars      => [$_->args],
-    lineno    => $_->line,
-    colno     => 123,
-    package   => $_->package,
-    function  => $_->subroutine,
-    %{$self->_map_file_to_context($_->filename, $_->line)},
-  } } $trace->frames;
+  my $stacktrace = Sentry::Stacktrace->new({
+    exception    => $exception,
+    frame_filter => sub($frame) { index($frame->package, 'Sentry') == -1 },
+  });
 
-  # warn $trace->as_string;
   return {
     exception => {
       values => [{
-        type   => ref($exception) || $exception,
-        value  => $exception,
-        module => 'module',
-
-        # mechanics => {},
-        stacktrace => {frames => \@frames}
+        type       => ref($exception),
+        value      => $exception->to_string,
+        module     => ref($exception),
+        stacktrace => $stacktrace,
       }]
     }
   };

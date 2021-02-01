@@ -1,5 +1,4 @@
 requires 'Cpanel::JSON::XS';
-requires 'Devel::StackTrace';
 requires 'EV';
 requires 'Future::AsyncAwait';
 requires 'IO::Socket::Socks';

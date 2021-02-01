@@ -3,6 +3,7 @@ use Mojo::Base -base, -signatures;
 
 use Carp 'croak';
 use LWP::Simple qw();
+use Mojo::Exception;
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Sentry;
@@ -48,7 +49,7 @@ sub foo3 {
     }
   });
 
-  die 'exception aus ScriptLib.pm';
+  Mojo::Exception->throw('exception aus ScriptLib.pm');
 
   # croak 'exception aus ScriptLib.pm';
 }
