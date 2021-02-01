@@ -3,8 +3,12 @@ use Mojo::Base -base, -signatures;
 
 use Sentry::Hub;
 use Sentry::Integration::MojoUserAgent;
+use Sentry::Integration::LwpUserAgent;
 
-my @Global_integrations = (Sentry::Integration::MojoUserAgent->new,);
+my @Global_integrations = (
+  Sentry::Integration::MojoUserAgent->new,
+  Sentry::Integration::LwpUserAgent->new,
+);
 
 sub _add_global_event_processor ($cb) {
   Sentry::Hub->get_current_scope->add_event_processor($cb);

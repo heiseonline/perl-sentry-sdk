@@ -2,6 +2,7 @@ package MyLib;
 use Mojo::Base -base, -signatures;
 
 use Carp 'croak';
+use LWP::Simple qw();
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Sentry;
@@ -11,6 +12,7 @@ has foo => undef;
 has ua  => sub { Mojo::UserAgent->new };
 
 sub foo1 ($self, $value) {
+  LWP::Simple::get('https://example.com/');
   $self->foo2($self->foo, $value),;
 }
 

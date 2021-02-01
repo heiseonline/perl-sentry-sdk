@@ -21,17 +21,6 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
 
       my $hub = $get_current_hub->();
 
-      $hub->add_breadcrumb({
-        type     => 'http',
-        category => 'Mojo::UserAgent',
-        data     => {
-          url         => $tx->req->url->to_string,
-          method      => $tx->req->method,
-          status_code => $tx->res->code,
-        }
-      })
-        if $self->breadcrumbs;
-
       my $span;
 
       if ($self->tracing && (my $parent_span = $hub->get_scope()->get_span)) {
@@ -49,6 +38,17 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
       }
 
       my $result = $orig->($ua, $tx, $cb);
+
+      $hub->add_breadcrumb({
+        type     => 'http',
+        category => 'Mojo::UserAgent',
+        data     => {
+          url         => $tx->req->url->to_string,
+          method      => $tx->req->method,
+          status_code => $tx->res->code,
+        }
+      })
+        if $self->breadcrumbs;
 
       if ($self->tracing) {
         $span->set_http_status($tx->res->code);
