@@ -1,4 +1,4 @@
-package ScriptLib;
+package MyLib;
 use Mojo::Base -base, -signatures;
 
 use Carp 'croak';

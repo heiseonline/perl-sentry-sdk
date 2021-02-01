@@ -1,26 +1,24 @@
-#!/usr/bin/env perl
-use Mojo::Base -strict, -signatures;
+package MyScript;
+use Mojo::Base -base, -signatures;
 
-use lib qw(lib example);
 use Mojo::Util 'dumper';
 use MyIntegration;
+use MyLib;
 use Sentry;
 use Sentry::Hub;
 use Sentry::Severity;
 use Try::Tiny;
 
+Sentry->init({
+  dsn          => 'http://b61a335479ff48529d773343287bcdad@localhost:9000/2',
+  environment  => 'my environment',
+  release      => '1.0.0',
+  dist         => '12345',
+  integrations => [MyIntegration->new],
+  debug        => 1,
+});
+
 sub main {
-  my $dsn = 'http://b61a335479ff48529d773343287bcdad@localhost:9000/2';
-
-  Sentry->init({
-    dsn          => $dsn,
-    environment  => 'my environment',
-    release      => '1.0.0',
-    dist         => '12345',
-    integrations => [MyIntegration->new],
-    debug        => 1,
-  });
-
   Sentry->configure_scope(sub($scope) {
     $scope->set_tag(foo => 'bar');
   });
@@ -53,8 +51,7 @@ sub main {
     $scope->set_span($transaction);
   });
   try {
-    use ScriptLib;
-    my $s = ScriptLib->new(foo => 'my foo');
+    my $s = MyLib->new(foo => 'my foo');
     $s->foo1('foo1 value');
   }
   catch {
@@ -65,4 +62,4 @@ sub main {
   $transaction->finish();
 }
 
-main();
+1;
