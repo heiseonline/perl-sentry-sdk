@@ -2,27 +2,37 @@ package CGI::Application::Plugin::Sentry;
 use Mojo::Base -base, -signatures;
 
 use CGI::Application;
+use Mojo::Util 'dumper';
 use Sentry;
 
-# use base 'Exporter';
-
-Sentry->init({dsn => 'fixme', release => '1.0.0', dist => '12345',});
+CGI::Application->add_callback(
+  init => sub ($c, @args) {
+    Sentry->init({dsn => 'fixme', release => '1.0.0', dist => '12345',});
+  }
+);
 
 CGI::Application->add_callback(
-  init => sub {
-    my $c = shift;
+  prerun => sub ($c, @args) {
+    warn dumper {
+      request => {
+        url     => $c->query->url(-full => 1),
+        method  => $c->query->request_method,
+        query   => {$c->query->Vars},
+        headers => {map { $_ => $c->query->http($_) } $c->query->http},
+      }
+    };
 
     Sentry::Hub->get_current_hub()->push_scope();
 
     my $transaction = Sentry->start_transaction(
-      {name => 'FIXME', op => 'http.server',},
+      {name => $c->get_current_runmode, op => 'http.server',},
       {
-        # request => {
-        #   url     => $req->url->to_string,
-        #   method  => $req->method,
-        #   query   => $req->url->query,
-        #   headers => $req->headers,
-        # }
+        request => {
+          url     => $c->query->url,
+          method  => $c->query->request_method,
+          query   => {$c->query->Vars},
+          headers => $c->query->http,
+        }
       }
     );
 
@@ -35,9 +45,7 @@ CGI::Application->add_callback(
 );
 
 CGI::Application->add_callback(
-  postrun => sub {
-    my $c = shift;
-
+  postrun => sub ($c, @args) {
     my $transaction = $c->param('__sentry__transaction');
     $transaction->set_http_status(200);    # FIXME
     $transaction->finish();
