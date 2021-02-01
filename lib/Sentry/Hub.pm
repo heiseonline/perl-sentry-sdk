@@ -7,6 +7,7 @@ use Sentry::Logger;
 use Sentry::Severity;
 use Sentry::Tracing::Transaction;
 use Sentry::Util qw(uuid4);
+use Time::HiRes qw(time);
 use Try::Tiny;
 
 my $Instance;
@@ -122,7 +123,8 @@ sub run ($self, $cb) {
 }
 
 sub start_transaction ($self, $context, $custom_sampling_context = undef) {
-  return Sentry::Tracing::Transaction->new({$context->%*, _hub => $self});
+  return Sentry::Tracing::Transaction->new(
+    {$context->%*, _hub => $self, start_timestamp => time});
 }
 
 1;
