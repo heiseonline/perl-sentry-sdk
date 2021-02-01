@@ -59,7 +59,7 @@ sub send ($self, $payload) {
     __PACKAGE__
   );
 
-  if ($tx->res->code == 400) {
+  if (($tx->res->code // 0) == 400) {
     logger->error($tx->res->body);
   }
 
