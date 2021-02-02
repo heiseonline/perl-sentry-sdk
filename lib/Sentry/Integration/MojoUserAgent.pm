@@ -31,7 +31,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           data        => {
             url     => $tx->req->url->to_string,
             method  => $tx->req->method,
-            headers => $tx->req->headers,
+            headers => $tx->req->headers->{headers},
           },
         });
 
@@ -46,7 +46,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           url         => $tx->req->url->to_string,
           method      => $tx->req->method,
           status_code => $tx->res->code,
-          headers     => $tx->res->headers,
+          headers     => $tx->res->headers->{headers},
         }
       })
         if $self->breadcrumbs;
