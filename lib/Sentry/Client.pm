@@ -13,12 +13,12 @@ use Sentry::Util qw(uuid4 truncate);
 use Time::HiRes;
 use Try::Tiny;
 
-has _options     => sub         { {} };
-has _transport   => sub         { Sentry::Transport::Http->new };
-has scope        => sub         { Sentry::Hub::Scope->new };
+has _options     => sub { {} };
+has _transport   => sub { Sentry::Transport::Http->new };
+has scope        => sub { Sentry::Hub::Scope->new };
 has integrations => sub ($self) { $self->_options->{integrations} // [] };
 
-sub setup_integrations($self) {
+sub setup_integrations ($self) {
   Sentry::Integration->setup($self->integrations);
 }
 
@@ -55,7 +55,7 @@ sub _map_file_to_context ($self, $file, $line) {
   return $self->_source_file_registry->get_context_lines($file, $line);
 }
 
-sub is_file_of_app($frame) {
+sub is_file_of_app ($frame) {
   return scalar $frame->filename !~ m{\A /}xms;
 }
 
@@ -68,7 +68,10 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
 
   my $stacktrace = Sentry::Stacktrace->new({
     exception    => $exception,
-    frame_filter => sub($frame) { index($frame->package, 'Sentry') == -1 },
+    frame_filter => sub ($frame) {
+      index($frame->package, 'Sentry') == -1
+        && $frame->package !~ m{(Class::MOP|CGI::Carp|Try::Tiny)}xms;
+    },
   });
 
   return {
@@ -166,7 +169,7 @@ sub _prepare_event ($self, $event, $scope, $hint = undef) {
     $event->%*,
     sdk       => $self->_options->{_metadata}{sdk},
     platform  => 'perl',
-    event_id  => $event->{event_id} // ($hint // {})->{event_id} // uuid4(),
+    event_id  => $event->{event_id}  // ($hint // {})->{event_id} // uuid4(),
     timestamp => $event->{timestamp} // time,
   );
 
