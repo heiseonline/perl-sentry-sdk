@@ -70,7 +70,7 @@ sub start_child ($self, $span_context = {}) {
   return $child_span;
 }
 
-sub get_trace_context($self) {
+sub get_trace_context ($self) {
   return {
     data           => $self->data,
     description    => $self->description,
@@ -83,7 +83,7 @@ sub get_trace_context($self) {
   };
 }
 
-sub TO_JSON($self) {
+sub TO_JSON ($self) {
   return {
     data            => $self->data,
     description     => $self->description,
@@ -107,11 +107,11 @@ sub set_http_status ($self, $status) {
   $self->status(lc status_message($status));
 }
 
-sub to_hash($self) {
+sub to_hash ($self) {
   return {'sentry-trace' => $self->to_sentry_trace};
 }
 
-sub finish($self) {
+sub finish ($self) {
   $self->timestamp(time);
 }
 

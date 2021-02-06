@@ -4,7 +4,7 @@ use Mojo::Base -base, -signatures;
 use Mojo::JSON qw(encode_json);
 
 has event_id => undef;
-has headers  => sub($self) { {
+has headers  => sub ($self) { {
   event_id => $self->event_id,
 
 # sent_at => time
@@ -15,7 +15,7 @@ has type         => 'transaction';
 has item_headers =>
   sub ($self) { {type => $self->type, sample_rates => $self->sample_rates} };
 
-sub serialize($self) {
+sub serialize ($self) {
   my @lines = ($self->headers, $self->item_headers, $self->body);
   return join("\n", map { encode_json($_) } @lines);
 }

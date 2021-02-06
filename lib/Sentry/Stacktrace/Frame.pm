@@ -7,7 +7,7 @@ has [qw(package filename line subroutine)];
 has _source_file_registry => sub { Sentry::SourceFileRegistry->new };
 has _home                 => sub { Mojo::Home->new->detect };
 
-sub _is_in_app($self) {
+sub _is_in_app ($self) {
   return $self->filename !~ /\.cpan/
     && index($self->filename, $self->_home) > -1;
 }
@@ -17,7 +17,7 @@ sub _map_file_to_context ($self) {
     $self->line);
 }
 
-sub TO_JSON($self) {
+sub TO_JSON ($self) {
   return {
     in_app    => \($self->_is_in_app()),
     abs_path  => $self->filename,

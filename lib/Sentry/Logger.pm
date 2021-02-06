@@ -30,7 +30,7 @@ sub error ($self, $message, $context = $self->context) {
   $self->_print($message, $context, 1);
 }
 
-sub enable($self) {
+sub enable ($self) {
   $self->enabled(1);
 }
 

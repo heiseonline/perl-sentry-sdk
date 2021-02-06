@@ -29,11 +29,11 @@ sub bind_client ($self, $client) {
   $client->setup_integrations();
 }
 
-sub _get_top_scope($self) {
+sub _get_top_scope ($self) {
   return @{$self->scopes}[0];
 }
 
-sub get_current_scope($package) {
+sub get_current_scope ($package) {
   return @{$package->get_current_hub()->scopes}[-1];
 }
 
@@ -46,12 +46,12 @@ sub configure_scope ($self, $cb) {
   $cb->($self->get_current_scope);
 }
 
-sub push_scope($self) {
+sub push_scope ($self) {
   my $scope = $self->get_current_scope->clone;
   push @{$self->scopes}, $scope;
   return $scope;
 }
-sub pop_scope($self) { pop @{$self->scopes} }
+sub pop_scope ($self) { pop @{$self->scopes} }
 
 sub with_scope ($self, $cb) {
   my $scope = $self->push_scope;
@@ -64,7 +64,7 @@ sub with_scope ($self, $cb) {
   };
 }
 
-sub get_scope($self) {
+sub get_scope ($self) {
   return $self->get_current_scope;
 }
 
@@ -80,7 +80,7 @@ sub _invoke_client ($self, $method, @args) {
   }
 }
 
-sub _new_event_id($self) {
+sub _new_event_id ($self) {
   $self->_last_event_id(uuid4());
   return $self->_last_event_id;
 }

@@ -9,7 +9,7 @@ has frame_filter => sub {
   sub {0}
 };
 
-has frames => sub($self) { return $self->prepare_frames() };
+has frames => sub ($self) { return $self->prepare_frames() };
 
 sub prepare_frames ($self) {
   my @frames = reverse map { Sentry::Stacktrace::Frame->from_caller($_->@*) }

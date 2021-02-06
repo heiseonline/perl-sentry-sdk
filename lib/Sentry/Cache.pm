@@ -5,7 +5,7 @@ has _cache => sub { {} };
 
 my $Instance;
 
-sub get_instance($package) {
+sub get_instance ($package) {
   $Instance //= $package->new;
   return $Instance;
 }

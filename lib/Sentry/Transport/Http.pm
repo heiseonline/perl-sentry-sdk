@@ -1,6 +1,7 @@
 package Sentry::Transport::Http;
 use Mojo::Base -base, -signatures;
 
+use HTTP::Status qw(:constants);
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Readonly;
@@ -14,7 +15,7 @@ has _http          => sub { Mojo::UserAgent->new };
 has _sentry_client => 'perl-sentry/1.0';
 has _sentry_key    => 'b61a335479ff48529d773343287bcdad';
 has _project       => 2;
-has _headers       => sub($self) {
+has _headers       => sub ($self) {
   my @header = (
     "Sentry sentry_version=$SENTRY_API_VERSION",
     "sentry_client=" . $self->_sentry_client,
@@ -59,7 +60,7 @@ sub send ($self, $payload) {
     __PACKAGE__
   );
 
-  if (($tx->res->code // 0) == 400) {
+  if (($tx->res->code // 0) == HTTP_BAD_REQUEST) {
     logger->error($tx->res->body);
   }
 

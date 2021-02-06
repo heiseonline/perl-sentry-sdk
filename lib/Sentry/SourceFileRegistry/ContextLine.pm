@@ -17,7 +17,7 @@ sub _get_lower_bound ($self, $line) {
   return [] if $to < 0;
 
   my @line_range = uniq(map { $_ >= 0 ? $_ : 0 } ($from .. $to));
-  return [grep { defined $_ } @{$self->_lines}[@line_range]];
+  return [grep {defined} @{$self->_lines}[@line_range]];
 }
 
 sub _get_upper_bound ($self, $line) {

@@ -10,9 +10,9 @@ has sampled     => 1;
 has context     => undef;
 has name        => '<unlabeled transaction>';
 has spans       => sub { [] };
-has transaction => sub($self) {$self};
+has transaction => sub ($self) {$self};
 
-sub finish($self) {
+sub finish ($self) {
   $self->SUPER::finish();
 
   return unless $self->sampled;
