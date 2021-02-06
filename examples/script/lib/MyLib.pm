@@ -14,7 +14,7 @@ has ua  => sub { Mojo::UserAgent->new };
 
 sub foo1 ($self, $value) {
   LWP::Simple::get('https://example.com/');
-  $self->foo2($self->foo, $value),;
+  $self->foo2($self->foo, $value);
 }
 
 sub foo2 ($self, $value, $x = undef) {
@@ -30,7 +30,7 @@ sub foo2 ($self, $value, $x = undef) {
     message  => 'breadcrumb in foo2',
     type     => 'debug',
     category => 'ui.click',
-    data     => {some => 'data', bla => ['a', 'b']}
+    data     => { some => 'data', bla => ['a', 'b'] }
   });
 
   $self->foo3;

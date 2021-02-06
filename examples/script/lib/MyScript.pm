@@ -26,7 +26,8 @@ sub main {
     $scope->set_tag(bar => 'baz');
   });
   Sentry->add_breadcrumb({
-    message => 'my breadcrumb (warning)', level => Sentry::Severity->Warning,
+    message => 'my breadcrumb (warning)',
+    level   => Sentry::Severity->Warning,
   });
 
   # # Integration SDK
@@ -45,16 +46,15 @@ sub main {
   # Sentry->capture_message('ich bin eine separate message');
 
   my $transaction
-    = Sentry->start_transaction({name => 'MyScript', op => 'http.server',},
-    {request => {url => '/foo/bar', query => {bla => 'blubb'}}});
+    = Sentry->start_transaction({ name => 'MyScript', op => 'http.server', },
+      { request => { url => '/foo/bar', query => { bla => 'blubb' } } });
   Sentry->configure_scope(sub ($scope) {
     $scope->set_span($transaction);
   });
   try {
     my $s = MyLib->new(foo => 'my foo');
     $s->foo1('foo1 value');
-  }
-  catch {
+  } catch {
     Sentry->capture_exception($_);
   };
 

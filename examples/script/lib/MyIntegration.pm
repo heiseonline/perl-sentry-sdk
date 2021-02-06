@@ -11,20 +11,18 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
     foo2 => sub ($orig, @args) {
       my $hub = $get_current_hub->();
 
-      $hub->add_breadcrumb({message => 'Breadcrumb aus MyIntegration (2)'});
+      $hub->add_breadcrumb({ message => 'Breadcrumb aus MyIntegration (2)' });
 
       my $parent = $hub->get_scope()->get_span;
 
-      my $span
-        = $parent->start_child({name => 'foo2', description => 'calling foo2',
-        });
+      my $span = $parent->start_child({
+        name => 'foo2', description => 'calling foo2', });
 
       my $return_value;
 
       try {
         $return_value = $orig->(@args);
-      }
-      catch {
+      } catch {
         $span->finish();
         die $_;
       };

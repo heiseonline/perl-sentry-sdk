@@ -9,5 +9,4 @@ use lib (
 
 use MyScript;
 
-
 MyScript->main();
