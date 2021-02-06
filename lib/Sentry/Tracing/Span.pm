@@ -2,15 +2,18 @@ package Sentry::Tracing::Span;
 use Mojo::Base -base, -signatures;
 
 use HTTP::Status qw(status_message);
+use Readonly;
 use Sentry::Tracing::Transaction;
 use Sentry::Util qw(uuid4);
 use Time::HiRes qw(time);
+
+Readonly my $SPAN_ID_LENGTH => 16;
 
 # https://develop.sentry.dev/sdk/unified-api/tracing
 
 # Hexadecimal string representing a uuid4 value. The length is exactly 32
 # characters. Dashes are not allowed. Has to be lowercase
-has span_id => sub { substr(uuid4(), 0, 16) };
+has span_id => sub { substr(uuid4(), 0, $SPAN_ID_LENGTH) };
 
 # Optional. A map or list of tags for this event. Each tag must be less than 200
 # characters.
