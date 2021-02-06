@@ -16,9 +16,9 @@ has extra                  => sub { {} };
 has fingerprint            => sub { [] };
 has level                  => Sentry::Severity->Info;
 has span                   => undef;
-has tags             => sub { {} };
-has transaction_name => undef;
-has user             => undef;
+has tags                   => sub { {} };
+has transaction_name       => undef;
+has user                   => undef;
 
 sub set_span ($self, $span) {
   $self->span($span);
@@ -34,7 +34,7 @@ sub set_extra ($self, $name, $value) {
 }
 
 sub set_extras ($self, $extras) {
-  $self->extra = {%{$self->extra}, %{$extras}};
+  $self->extra = { %{ $self->extra }, %{$extras} };
 }
 
 sub set_tag ($self, $key, $value) {
@@ -42,14 +42,13 @@ sub set_tag ($self, $key, $value) {
 }
 
 sub set_tags ($self, $tags) {
-  $self->tags = {%{$self->tags}, %{$tags}};
+  $self->tags = { %{ $self->tags }, %{$tags} };
 }
 
 sub set_context ($self, $key, $context = undef) {
   if (not defined $context) {
     delete $self->contexts->{$key};
-  }
-  else {
+  } else {
     $self->contexts->{$key} = $context;
   }
 
@@ -67,7 +66,7 @@ sub set_transaction_name ($self, $name) {
   return $self;
 }
 
-sub get_span($self) {
+sub get_span ($self) {
   return $self->span;
 }
 
@@ -83,7 +82,7 @@ sub add_error_processor ($self, $error_event_processor) {
   push $self->error_event_processors->@*, $error_event_processor;
 }
 
-sub clear($self) {
+sub clear ($self) {
 
   # Resets a scope to default values while keeping all registered event
   # processors. This does not affect either child or parent scopes
@@ -91,10 +90,10 @@ sub clear($self) {
 
 sub add_breadcrumb ($self, $breadcrumb) {
   $breadcrumb->{timestamp} //= time;
-  push @{$self->breadcrumbs}, $breadcrumb;
+  push @{ $self->breadcrumbs }, $breadcrumb;
 }
 
-sub clear_breadcrumbs($self) {
+sub clear_breadcrumbs ($self) {
   $self->breadcrumbs([]);
 }
 
@@ -130,7 +129,7 @@ sub apply_to_event ($self, $event, $hint = undef) {
 
     if (my $transaction_name = $self->span->transaction->name) {
       $event->{tags}
-        = {transaction => $transaction_name, ($event->{tags} // {})->%*};
+        = { transaction => $transaction_name, ($event->{tags} // {})->%* };
     }
   }
 

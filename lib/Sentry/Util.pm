@@ -21,7 +21,8 @@ sub truncate ($string, $max = 0) {
 }
 
 sub merge ($target, $source, $key) {
-  $target->{$key} = {($target->{$key} // {})->%*, ($source->{$key} // {})->%*};
+  $target->{$key}
+    = { ($target->{$key} // {})->%*, ($source->{$key} // {})->%* };
 }
 
 my %Patched = ();

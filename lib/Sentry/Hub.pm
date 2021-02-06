@@ -30,11 +30,11 @@ sub bind_client ($self, $client) {
 }
 
 sub _get_top_scope ($self) {
-  return @{$self->scopes}[0];
+  return @{ $self->scopes }[0];
 }
 
 sub get_current_scope ($package) {
-  return @{$package->get_current_hub()->scopes}[-1];
+  return @{ $package->get_current_hub()->scopes }[-1];
 }
 
 sub get_current_hub {
@@ -48,18 +48,17 @@ sub configure_scope ($self, $cb) {
 
 sub push_scope ($self) {
   my $scope = $self->get_current_scope->clone;
-  push @{$self->scopes}, $scope;
+  push $self->scopes->@*, $scope;
   return $scope;
 }
-sub pop_scope ($self) { pop @{$self->scopes} }
+sub pop_scope ($self) { pop @{ $self->scopes } }
 
 sub with_scope ($self, $cb) {
   my $scope = $self->push_scope;
 
   try {
     $cb->($scope);
-  }
-  finally {
+  } finally {
     $self->pop_scope;
   };
 }
@@ -74,8 +73,7 @@ sub _invoke_client ($self, $method, @args) {
 
   if ($client->can($method)) {
     $client->$method(@args, $scope);
-  }
-  else {
+  } else {
     warn "Unknown method: $method";
   }
 }
@@ -86,12 +84,11 @@ sub _new_event_id ($self) {
 }
 
 sub capture_message ($self, $message, $level = Sentry::Severity->Info,
-  $hint = undef)
-{
+  $hint = undef) {
   my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_message', $message, $level,
-    {event_id => $event_id});
+    { event_id => $event_id });
 
   return $event_id;
 }
@@ -100,7 +97,7 @@ sub capture_exception ($self, $exception, $hint = undef) {
   my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_exception', $exception,
-    {event_id => $event_id});
+    { event_id => $event_id });
 
   return $event_id;
 }
@@ -109,7 +106,7 @@ sub capture_event ($self, $event, $hint = {}) {
   my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_event', $event,
-    {$hint->%*, event_id => $event_id});
+    { $hint->%*, event_id => $event_id });
 
   return $event_id;
 }
@@ -124,7 +121,7 @@ sub run ($self, $cb) {
 
 sub start_transaction ($self, $context, $custom_sampling_context = undef) {
   return Sentry::Tracing::Transaction->new(
-    {$context->%*, _hub => $self, start_timestamp => time});
+    { $context->%*, _hub => $self, start_timestamp => time });
 }
 
 1;

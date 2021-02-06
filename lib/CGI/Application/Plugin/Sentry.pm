@@ -12,7 +12,7 @@ $SIG{__DIE__} = sub {
 
 CGI::Application->add_callback(
   init => sub ($c, %) {
-    Sentry->init({dsn => 'fixme', release => '1.0.0', dist => '12345',});
+    Sentry->init({ dsn => 'fixme', release => '1.0.0', dist => '12345', });
   }
 );
 
@@ -27,13 +27,13 @@ CGI::Application->add_callback(
     Sentry::Hub->get_current_hub()->push_scope();
 
     my $transaction = Sentry->start_transaction(
-      {name => $rm, op => 'http.server',},
+      { name => $rm, op => 'http.server', },
       {
         request => {
           url     => $c->query->url(-full => 1),
           method  => $c->query->request_method,
-          query   => {$c->query->Vars},
-          headers => {map { $_ => $c->query->http($_) } $c->query->http},
+          query   => { $c->query->Vars },
+          headers => { map { $_ => $c->query->http($_) } $c->query->http },
           env     => \%ENV,
         }
       }

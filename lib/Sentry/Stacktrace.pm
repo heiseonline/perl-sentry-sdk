@@ -19,7 +19,7 @@ sub prepare_frames ($self) {
 }
 
 sub TO_JSON ($self) {
-  return {frames => $self->frames};
+  return { frames => $self->frames };
 }
 
 1;

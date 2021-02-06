@@ -102,7 +102,7 @@ sub TO_JSON ($self) {
 }
 
 sub set_tag ($self, $key, $value) {
-  $self->tags({$self->tags->%*, $key => $value});
+  $self->tags({ $self->tags->%*, $key => $value });
 }
 
 sub set_http_status ($self, $status) {
@@ -111,7 +111,7 @@ sub set_http_status ($self, $status) {
 }
 
 sub to_hash ($self) {
-  return {'sentry-trace' => $self->to_sentry_trace};
+  return { 'sentry-trace' => $self->to_sentry_trace };
 }
 
 sub finish ($self) {

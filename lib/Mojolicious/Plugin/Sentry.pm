@@ -11,14 +11,13 @@ sub register ($self, $app, $conf) {
     }
   );
 
-
   $app->hook(
     around_action => sub ($next, $c, $action, $last) {
       return unless $last;
 
       my $req = $c->req;
 
-      Sentry::Hub->get_current_hub()->with_scope(sub($scope) {
+      Sentry::Hub->get_current_hub()->with_scope(sub ($scope) {
         my $transaction = Sentry->start_transaction(
           {
             name => $c->match->endpoint->pattern->unparsed || '/',
@@ -34,19 +33,17 @@ sub register ($self, $app, $conf) {
           }
         );
 
-        Sentry->configure_scope(sub($scope) {
+        Sentry->configure_scope(sub ($scope) {
           $scope->set_span($transaction);
         });
 
         try {
           $next->();
 
-        }
-        catch {
+        } catch {
           Sentry->capture_exception($_);
           $c->reply->exception($_)
-        }
-        finally {
+        } finally {
           $transaction->set_http_status($c->res->code);
           $transaction->finish();
         }

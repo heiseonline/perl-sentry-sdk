@@ -10,10 +10,10 @@ has headers  => sub ($self) { {
 # sent_at => time
 } };
 has body         => sub { {} };
-has sample_rates => sub { [{id => "client_rate", rate => "1"}] };
+has sample_rates => sub { [{ id => "client_rate", rate => "1" }] };
 has type         => 'transaction';
 has item_headers =>
-  sub ($self) { {type => $self->type, sample_rates => $self->sample_rates} };
+  sub ($self) { { type => $self->type, sample_rates => $self->sample_rates } };
 
 sub serialize ($self) {
   my @lines = ($self->headers, $self->item_headers, $self->body);

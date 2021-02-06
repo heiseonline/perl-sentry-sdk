@@ -18,7 +18,7 @@ sub finish ($self) {
   return unless $self->sampled;
 
   my %transaction = (
-    contexts        => {trace => $self->get_trace_context(),},
+    contexts        => { trace => $self->get_trace_context(), },
     spans           => $self->spans,
     start_timestamp => $self->start_timestamp,
     tags            => $self->tags,

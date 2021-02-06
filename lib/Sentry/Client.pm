@@ -26,8 +26,7 @@ sub setup_integrations ($self) {
 sub from_config ($package, $config) { }
 
 sub event_from_message ($self, $message, $level = Sentry::Severity->Info,
-  $hint = undef)
-{
+  $hint = undef) {
   my %event = (
     event_id => $hint && $hint->{event_id},
     level    => $level,
@@ -38,8 +37,7 @@ sub event_from_message ($self, $message, $level = Sentry::Severity->Info,
 }
 
 sub capture_message ($self, $message, $level = undef, $hint = undef,
-  $scope = undef)
-{
+  $scope = undef) {
   my $event = $self->event_from_message($message, $level, $hint);
 
   return $self->_capture_event($event, $hint, $scope);
@@ -97,8 +95,7 @@ sub _capture_event ($self, $event, $hint = undef, $scope = undef) {
 
   try {
     $event_id = $self->_process_event($event, $hint, $scope)->{event_id};
-  }
-  catch {
+  } catch {
     logger->error($_);
   };
 
@@ -129,7 +126,6 @@ sub _normalize_event ($self, $event) {
   my %normalized = ($event->%*,);
   return \%normalized;
 }
-
 
 sub _apply_client_options ($self, $event) {
   my $options          = $self->_options;

@@ -25,7 +25,7 @@ sub TO_JSON ($self) {
     lineno    => $self->line,
     package   => $self->package,
     function  => $self->subroutine,
-    %{$self->_map_file_to_context()},
+    %{ $self->_map_file_to_context() },
   };
 }
 

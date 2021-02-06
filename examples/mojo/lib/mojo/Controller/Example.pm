@@ -15,11 +15,11 @@ sub welcome ($self) {
   $self->render(msg => 'Welcome to the Mojolicious real-time web framework!');
 }
 
-sub bla($self) {
+sub bla ($self) {
   $self->render(text => 'ok');
 }
 
-sub dies($self) {
+sub dies ($self) {
   die 'ohoh2!';
 }
 

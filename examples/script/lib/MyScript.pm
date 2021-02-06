@@ -19,10 +19,10 @@ Sentry->init({
 });
 
 sub main {
-  Sentry->configure_scope(sub($scope) {
+  Sentry->configure_scope(sub ($scope) {
     $scope->set_tag(foo => 'bar');
   });
-  Sentry->configure_scope(sub($scope) {
+  Sentry->configure_scope(sub ($scope) {
     $scope->set_tag(bar => 'baz');
   });
   Sentry->add_breadcrumb({
@@ -47,7 +47,7 @@ sub main {
   my $transaction
     = Sentry->start_transaction({name => 'MyScript', op => 'http.server',},
     {request => {url => '/foo/bar', query => {bla => 'blubb'}}});
-  Sentry->configure_scope(sub($scope) {
+  Sentry->configure_scope(sub ($scope) {
     $scope->set_span($transaction);
   });
   try {

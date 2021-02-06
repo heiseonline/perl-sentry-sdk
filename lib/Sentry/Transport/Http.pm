@@ -46,8 +46,7 @@ sub send ($self, $payload) {
     );
     $payload = $envelope->serialize;
     $tx      = $self->_http->post($url => $self->_headers, $payload);
-  }
-  else {
+  } else {
     $tx = $self->_http->post($url => $self->_headers, json => $payload);
   }
 
