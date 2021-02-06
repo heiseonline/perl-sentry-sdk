@@ -29,6 +29,9 @@ perltidyrc = .perltidyrc
 [-ValuesAndExpressions::ProhibitEmptyQuotes]
 [-ValuesAndExpressions::ProhibitNoisyQuotes]
 [-ValuesAndExpressions::RequireNumberSeparators]
+[-Subroutines::ProhibitBuiltinHomonyms]
+[-Variables::ProhibitPunctuationVars]
+[-NamingConventions::ProhibitAmbiguousNames]
 
 [Subroutines::ProhibitUnusedPrivateSubroutines]
 allow_name_regex = _build_\w+
