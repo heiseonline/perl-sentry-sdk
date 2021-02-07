@@ -32,6 +32,7 @@ perltidyrc = .perltidyrc
 [-Subroutines::ProhibitBuiltinHomonyms]
 [-Variables::ProhibitPunctuationVars]
 [-NamingConventions::ProhibitAmbiguousNames]
+[-Subroutines::ProhibitManyArgs]
 
 [Subroutines::ProhibitUnusedPrivateSubroutines]
 allow_name_regex = _build_\w+
