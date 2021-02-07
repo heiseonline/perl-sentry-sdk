@@ -29,9 +29,9 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           name        => 'My Transaction',
           description => $tx->req->method . ' ' . $tx->req->url->to_string,
           data        => {
-            url     => $tx->req->url->to_string,
-            method  => $tx->req->method,
-            headers => $tx->req->headers->{headers},
+            url         => $tx->req->url->to_string,
+            method      => $tx->req->method,
+            status_code => $tx->res->code,
           },
         });
 
@@ -46,8 +46,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           url         => $tx->req->url->to_string,
           method      => $tx->req->method,
           status_code => $tx->res->code,
-          headers     => $tx->res->headers->{headers},
-        }
+        },
       })
         if $self->breadcrumbs;
 
