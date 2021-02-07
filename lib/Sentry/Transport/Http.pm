@@ -2,6 +2,7 @@ package Sentry::Transport::Http;
 use Mojo::Base -base, -signatures;
 
 use HTTP::Status qw(:constants);
+use Mojo::JSON 'encode_json';
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Readonly;
@@ -58,8 +59,8 @@ sub send ($self, $payload) {
 
   logger->log(
     sprintf(
-      qq{Sentry request done. Payload: \n<<<<<<<<<<<<<<\n%s\n<<<<<<<<<<<<<<},
-      ref($payload) ? dumper($payload) : $payload,
+      qq{Sentry request done. Payload: \n<<<<<<<<<<<<<<\n%s\n<<<<<<<<<<<<<<\nCode: %s},
+      $tx->req->body, $tx->res->code // 'ERROR'
     ),
     __PACKAGE__
   );
