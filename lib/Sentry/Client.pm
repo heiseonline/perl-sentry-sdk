@@ -3,6 +3,7 @@ use Mojo::Base -base, -signatures;
 
 use Mojo::Home;
 use Mojo::Util 'dumper';
+use Sentry::DSN;
 use Sentry::Hub::Scope;
 use Sentry::Integration;
 use Sentry::Logger 'logger';
@@ -13,8 +14,10 @@ use Sentry::Util qw(uuid4 truncate);
 use Time::HiRes;
 use Try::Tiny;
 
-has _options     => sub { {} };
-has _transport   => sub { Sentry::Transport::Http->new };
+has _dsn       => sub ($self) { Sentry::DSN->parse($self->_options->{dsn}) };
+has _options   => sub { {} };
+has _transport =>
+  sub ($self) { Sentry::Transport::Http->new(dsn => $self->_dsn) };
 has scope        => sub { Sentry::Hub::Scope->new };
 has integrations => sub ($self) { $self->_options->{integrations} // [] };
 

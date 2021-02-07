@@ -11,27 +11,33 @@ use Sentry::Logger 'logger';
 
 Readonly my $SENTRY_API_VERSION => '7';
 
-has _http          => sub { Mojo::UserAgent->new };
+has _http => sub {
+  Mojo::UserAgent->new(request_timeout => 5, connect_timeout => 1);
+};
 has _sentry_client => 'perl-sentry/1.0';
-has _sentry_key    => 'b61a335479ff48529d773343287bcdad';
-has _project       => 2;
 has _headers       => sub ($self) {
   my @header = (
     "Sentry sentry_version=$SENTRY_API_VERSION",
     "sentry_client=" . $self->_sentry_client,
-    'sentry_key=' . $self->_sentry_key,
+    'sentry_key=' . $self->dsn->user,
   );
 
-  # my $pass = $self->dsn->pass;
-  # push @header, "sentry_secret=$pass" if $pass;
+  my $pass = $self->dsn->pass;
+  push @header, "sentry_secret=$pass" if $pass;
 
   return {
     'Content-Type'  => 'application/json',
     'X-Sentry-Auth' => join(', ', @header),
   };
 };
-has _sentry_url =>
-  sub ($self) { 'http://localhost:9000/api/' . $self->_project };
+has _sentry_url => sub ($self) {
+  my $dsn = $self->dsn;
+  die 'DSN missing' unless $dsn;
+
+  return sprintf('%s://%s:%d/api/%d',
+    $dsn->protocol, $dsn->host, $dsn->port, $dsn->project_id);
+};
+has dsn => undef;
 
 sub send ($self, $payload) {
   my $is_transaction = ($payload->{type} // '') eq 'transaction';
@@ -52,14 +58,18 @@ sub send ($self, $payload) {
 
   logger->log(
     sprintf(
-      qq{Sentry request done. Payload: \n<<<<<<<<<<<<<<\n%s\n<<<<<<<<<<<<<<\nCode: %d},
+      qq{Sentry request done. Payload: \n<<<<<<<<<<<<<<\n%s\n<<<<<<<<<<<<<<},
       ref($payload) ? dumper($payload) : $payload,
-      $tx->res->code
     ),
     __PACKAGE__
   );
 
-  if (($tx->res->code // 0) == HTTP_BAD_REQUEST) {
+  if (!defined $tx->res->code || $tx->res->is_error) {
+    logger->warn('Error: ' . ($tx->res->error // {})->{message});
+    return;
+  }
+
+  if ($tx->res->code == HTTP_BAD_REQUEST) {
     logger->error($tx->res->body);
   }
 
