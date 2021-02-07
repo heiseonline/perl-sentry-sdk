@@ -2,13 +2,8 @@ package CGI::Application::Plugin::Sentry;
 use Mojo::Base -base, -signatures;
 
 use CGI::Application;
-use Mojo::Exception;
 use Mojo::Util 'dumper';
 use Sentry;
-
-$SIG{__DIE__} = sub {
-  ref $_[0] ? CORE::die $_[0] : Mojo::Exception->throw(shift);
-};
 
 CGI::Application->add_callback(
   init => sub ($c, %) {

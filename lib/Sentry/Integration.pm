@@ -2,10 +2,12 @@ package Sentry::Integration;
 use Mojo::Base -base, -signatures;
 
 use Sentry::Hub;
+use Sentry::Integration::DieHandler;
 use Sentry::Integration::MojoUserAgent;
 use Sentry::Integration::LwpUserAgent;
 
 my @Global_integrations = (
+  Sentry::Integration::DieHandler->new,
   Sentry::Integration::MojoUserAgent->new,
   Sentry::Integration::LwpUserAgent->new,
 );

@@ -49,8 +49,8 @@ sub foo3 {
     }
   });
 
-  Mojo::Exception->throw('exception aus ScriptLib.pm');
-
+  die 'exception aus ScriptLib.pm';
+  # Mojo::Exception->throw('exception aus ScriptLib.pm');
   # croak 'exception aus ScriptLib.pm';
 }
 
