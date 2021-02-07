@@ -1,5 +1,3 @@
-## no critic (ValuesAndExpressions::ProhibitMagicNumbers)
-
 package Sentry::Tracing::Status;
 use Mojo::Base -base, -signatures;
 
@@ -58,26 +56,28 @@ sub OutOfRange {'out_of_range'}
 sub DataLoss {'data_loss'}
 
 sub from_http_code ($package, $code) {
-  return Sentry::Tracing::Status->Ok if $code < 400;
+  return Sentry::Tracing::Status->Ok if $code < HTTP_BAD_REQUEST;
 
-  given ($code >= 400 && $code < 500) {
-    when (HTTP_UNAUTHORIZED)        { Unauthenticated() }
-    when (HTTP_FORBIDDEN)           { PermissionDenied() }
-    when (HTTP_NOT_FOUND)           { NotFound() }
-    when (HTTP_CONFLICT)            { AlreadyExists() }
-    when (HTTP_PRECONDITION_FAILED) { FailedPrecondition() }
-    when (HTTP_TOO_MANY_REQUESTS)   { ResourceExhausted() }
-    default                         { InvalidArgument() }
+  if ($code >= HTTP_BAD_REQUEST && $code < HTTP_INTERNAL_SERVER_ERROR) {
+    given ($code) {
+      when (HTTP_UNAUTHORIZED)        { return Unauthenticated() }
+      when (HTTP_FORBIDDEN)           { return PermissionDenied() }
+      when (HTTP_NOT_FOUND)           { return NotFound() }
+      when (HTTP_CONFLICT)            { return AlreadyExists() }
+      when (HTTP_PRECONDITION_FAILED) { return FailedPrecondition() }
+      when (HTTP_TOO_MANY_REQUESTS)   { return ResourceExhausted() }
+      default                         { return InvalidArgument() }
+    }
   }
 
-  given ($code >= 500 && $code < 600) {
-    when (HTTP_NOT_IMPLEMENTED)     { Unimplemented() }
-    when (HTTP_SERVICE_UNAVAILABLE) { Unavailable() }
-    when (HTTP_GATEWAY_TIMEOUT)     { DeadlineExceeded() }
-    default                         { InternalError() }
+  if ($code >= HTTP_INTERNAL_SERVER_ERROR) {
+    given ($code) {
+      when (HTTP_NOT_IMPLEMENTED)     { return Unimplemented() }
+      when (HTTP_SERVICE_UNAVAILABLE) { return Unavailable() }
+      when (HTTP_GATEWAY_TIMEOUT)     { return DeadlineExceeded() }
+      default                         { return InternalError() }
+    }
   }
-
-  return UnknowError();
 }
 
 1;
