@@ -3,6 +3,7 @@ use Mojo::Base -base, -signatures;
 
 use HTTP::Status qw(status_message);
 use Readonly;
+use Sentry::Tracing::Status;
 use Sentry::Tracing::Transaction;
 use Sentry::Util qw(uuid4);
 use Time::HiRes qw(time);
@@ -107,7 +108,7 @@ sub set_tag ($self, $key, $value) {
 
 sub set_http_status ($self, $status) {
   $self->set_tag('http.status_code' => $status);
-  $self->status(lc status_message($status));
+  $self->status(Sentry::Tracing::Status->from_http_code($status));
 }
 
 sub to_hash ($self) {
