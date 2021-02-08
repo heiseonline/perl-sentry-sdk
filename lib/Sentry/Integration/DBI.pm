@@ -8,6 +8,7 @@ has tracing     => 1;
 
 # DBI is special. Classes are generated on-the-fly.
 sub around ($package, $method, $cb) {
+  ## no critic (TestingAndDebugging::ProhibitNoStrict, TestingAndDebugging::ProhibitNoWarnings, TestingAndDebugging::ProhibitProlongedStrictureOverride)
   no strict 'refs';
   no warnings 'redefine';
 
