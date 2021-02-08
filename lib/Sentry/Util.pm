@@ -28,12 +28,11 @@ sub merge ($target, $source, $key) {
 my %Patched = ();
 
 sub around ($package, $method, $cb) {
-  my $key = $package . ':' . $method;
+  my $key = $package . '::' . $method;
   return if $Patched{$key};
 
-  if (my $exception = load_class $package) {
-    warn $exception;
-    return;
+  if (my $e = load_class $package) {
+    die ref $e ? "Exception: $e" : "Module $package not found";
   }
 
   my $orig = $package->can($method);
@@ -41,6 +40,8 @@ sub around ($package, $method, $cb) {
   monkey_patch $package, $method => sub { $cb->($orig, @_) };
 
   $Patched{$key} = 1;
+
+  return;
 }
 
 1;

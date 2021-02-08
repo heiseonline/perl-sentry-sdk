@@ -6,9 +6,11 @@ use LWP::Simple qw();
 use Mojo::Exception;
 use Mojo::UserAgent;
 use Mojo::Util 'dumper';
+use MyDB;
 use Sentry;
 use Sentry::Severity;
 
+has _db => sub { MyDB->new };
 has foo => undef;
 has ua  => sub { Mojo::UserAgent->new };
 
@@ -33,6 +35,10 @@ sub foo2 ($self, $value, $x = undef) {
     category => 'ui.click',
     data     => { some => 'data', bla => ['a', 'b'] }
   });
+
+  $self->_db->insert('abc');
+  $self->_db->insert('def');
+  $self->_db->do_slow_stuff();
 
   $self->foo3;
 }
