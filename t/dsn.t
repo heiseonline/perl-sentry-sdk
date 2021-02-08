@@ -7,10 +7,8 @@ describe 'Sentry' => sub {
   my $dsn;
 
   before each => sub {
-    $dsn = Sentry::DSN->new({
-      from =>
-        'http://ff21cbe6ddaf4314833eabd2075e38e3@localhost:9000/foo/bar/2'
-    });
+    $dsn = Sentry::DSN->parse(
+      'http://ff21cbe6ddaf4314833eabd2075e38e3@localhost:9000/foo/bar/2');
   };
 
   it 'protocol' => sub {
@@ -36,7 +34,7 @@ describe 'Sentry' => sub {
   it 'path' => sub {
     is($dsn->path, '/foo/bar');
 
-    $dsn = Sentry::DSN->new({ from => 'http://abc@localhost:9000/2' });
+    $dsn = Sentry::DSN->parse('http://abc@localhost:9000/2');
     is($dsn->path, '');
   };
 
