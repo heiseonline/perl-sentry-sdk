@@ -1,4 +1,4 @@
-package Mojolicious::Plugin::Sentry;
+package Mojolicious::Plugin::SentrySDK;
 use Mojo::Base 'Mojolicious::Plugin', -signatures;
 
 use Sentry;
