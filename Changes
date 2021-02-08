@@ -2,6 +2,10 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+0.10.3  2021-02-09 00:28:01 CET
+
+  - fix: use new Sentry module name in framework integrations
+
 0.10.2  2021-02-08 23:54:59 CET
 
   - fix: rename Mojolicious::Plugin::Sentry -> Mojolicious::Plugin::SentrySDK
