@@ -1,9 +1,12 @@
-package Sentry;
+package Sentry::SDK;
 use Mojo::Base -base, -signatures;
 
+use version 0.77;
 use Mojo::Util 'dumper';
 use Sentry::Client;
 use Sentry::Hub;
+
+our $VERSION = version->declare('v0.0.1');
 
 sub _call_on_hub ($method, @args) {
   my $hub = Sentry::Hub->get_current_hub();
@@ -69,3 +72,34 @@ sub start_transaction ($package, $context, $custom_sampling_context = undef) {
 }
 
 1;
+
+__END__
+
+=encoding utf-8
+
+=head1 NAME
+
+Sentry::SDK - sentry.io integration
+
+=head1 SYNOPSIS
+
+  use Sentry::SDK;
+
+=head1 DESCRIPTION
+
+=head1 AUTHOR
+
+Philipp Busse E<lt>pmb@heise.deE<gt>
+
+=head1 COPYRIGHT
+
+Copyright 2021- Philipp Busse
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 SEE ALSO
+
+=cut

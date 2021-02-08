@@ -1,3 +1,5 @@
+/Sentry-SDK-*
+
 bak
 .vscode
 *.tmp.*
@@ -36,3 +38,4 @@ inc/
 /MANIFEST.bak
 /pm_to_blib
 /*.zip
+/.prove

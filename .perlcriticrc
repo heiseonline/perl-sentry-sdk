@@ -3,17 +3,12 @@
 severity = cruel
 include = layout
 
-# Ausschluss dieser Policy (s.u.) funktioniert irgendwie nicht. Per exclude
-# schon.
 exclude = CodeLayout::ProhibitParensWithBuiltins
 
 [CodeLayout::RequireTidyCode]
 perltidyrc = .perltidyrc
 
-# Signatures werden fälschlich als Prototypes erkannt:
-# https://github.com/Perl-Critic/Perl-Critic/issues/591
 [-Subroutines::ProhibitSubroutinePrototypes]
-
 [-CodeLayout::ProhibitParensWithBuiltins]
 [-CodeLayout::RequireTrailingCommas]
 [-ControlStructures::ProhibitPostfixControls]
@@ -33,6 +28,4 @@ perltidyrc = .perltidyrc
 [-Variables::ProhibitPunctuationVars]
 [-NamingConventions::ProhibitAmbiguousNames]
 [-Subroutines::ProhibitManyArgs]
-
-[Subroutines::ProhibitUnusedPrivateSubroutines]
-allow_name_regex = _build_\w+
+[-ValuesAndExpressions::RequireConstantVersion]

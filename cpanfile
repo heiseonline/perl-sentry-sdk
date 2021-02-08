@@ -1,6 +1,4 @@
 requires 'Cpanel::JSON::XS';
-requires 'EV';
-requires 'Future::AsyncAwait';
 requires 'IO::Socket::Socks';
 requires 'IO::Socket::SSL';
 requires 'Mojolicious';
