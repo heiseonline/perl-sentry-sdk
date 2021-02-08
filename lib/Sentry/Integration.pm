@@ -14,6 +14,7 @@ my @Global_integrations = (
   Sentry::Integration::LwpUserAgent->new,
 );
 
+## no critic (Subroutines::ProhibitUnusedPrivateSubroutines)
 sub _add_global_event_processor ($cb) {
   Sentry::Hub->get_current_scope->add_event_processor($cb);
 }
