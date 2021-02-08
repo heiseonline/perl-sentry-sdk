@@ -1,13 +1,13 @@
 package Mojolicious::Plugin::SentrySDK;
 use Mojo::Base 'Mojolicious::Plugin', -signatures;
 
-use Sentry;
+use Sentry::SDK;
 use Try::Tiny;
 
 sub register ($self, $app, $conf) {
   $app->hook(
     before_server_start => sub ($server, $app) {
-      Sentry->init($conf);
+      Sentry::SDK->init($conf);
     }
   );
 
@@ -18,7 +18,7 @@ sub register ($self, $app, $conf) {
       my $req = $c->req;
 
       Sentry::Hub->get_current_hub()->with_scope(sub ($scope) {
-        my $transaction = Sentry->start_transaction(
+        my $transaction = Sentry::SDK->start_transaction(
           {
             name => $c->match->endpoint->pattern->unparsed || '/',
             op   => 'http.server',
@@ -33,7 +33,7 @@ sub register ($self, $app, $conf) {
           }
         );
 
-        Sentry->configure_scope(sub ($scope) {
+        Sentry::SDK->configure_scope(sub ($scope) {
           $scope->set_span($transaction);
         });
 
@@ -41,7 +41,7 @@ sub register ($self, $app, $conf) {
           $next->();
 
         } catch {
-          Sentry->capture_exception($_);
+          Sentry::SDK->capture_exception($_);
           $c->reply->exception($_)
         } finally {
           $transaction->set_http_status($c->res->code);

@@ -3,17 +3,18 @@ use Mojo::Base -base, -signatures;
 
 use CGI::Application;
 use Mojo::Util 'dumper';
-use Sentry;
+use Sentry::SDK;
 
 CGI::Application->add_callback(
   init => sub ($c, %) {
-    Sentry->init({ dsn => 'fixme', release => '1.0.0', dist => '12345', });
+    Sentry::SDK->init(
+      { dsn => 'fixme', release => '1.0.0', dist => '12345', });
   }
 );
 
 CGI::Application->add_callback(
   error => sub ($c, $error) {
-    Sentry->capture_exception($error);
+    Sentry::SDK->capture_exception($error);
   }
 );
 
@@ -21,7 +22,7 @@ CGI::Application->add_callback(
   prerun => sub ($c, $rm) {
     Sentry::Hub->get_current_hub()->push_scope();
 
-    my $transaction = Sentry->start_transaction(
+    my $transaction = Sentry::SDK->start_transaction(
       { name => $rm, op => 'http.server', },
       {
         request => {
@@ -36,7 +37,7 @@ CGI::Application->add_callback(
 
     $c->param('__sentry__transaction', $transaction);
 
-    Sentry->configure_scope(sub ($scope) {
+    Sentry::SDK->configure_scope(sub ($scope) {
       $scope->set_span($transaction);
     });
   }
