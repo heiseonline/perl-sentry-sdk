@@ -98,7 +98,7 @@ Sentry::SDK - sentry.io integration
 
 =head2 init
 
-  Sentry::SDK->init(%options);
+  Sentry::SDK->init(\%options);
 
 Initializes the Sentry SDK in your app. The following options are provided:
 
