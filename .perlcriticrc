@@ -1,0 +1,31 @@
+# https://metacpan.org/pod/Perl::Critic::PolicySummary
+
+severity = cruel
+include = layout
+
+exclude = CodeLayout::ProhibitParensWithBuiltins
+
+[CodeLayout::RequireTidyCode]
+perltidyrc = .perltidyrc
+
+[-Subroutines::ProhibitSubroutinePrototypes]
+[-CodeLayout::ProhibitParensWithBuiltins]
+[-CodeLayout::RequireTrailingCommas]
+[-ControlStructures::ProhibitPostfixControls]
+[-Documentation::RequirePodSections]
+[-ErrorHandling::RequireCarping]
+[-Modules::RequireVersionVar]
+[-References::ProhibitDoubleSigils]
+[-RegularExpressions::RequireDotMatchAnything]
+[-RegularExpressions::RequireExtendedFormatting]
+[-RegularExpressions::RequireLineBoundaryMatching]
+[-Subroutines::ProhibitExplicitReturnUndef]
+[-Subroutines::RequireFinalReturn]
+[-ValuesAndExpressions::ProhibitEmptyQuotes]
+[-ValuesAndExpressions::ProhibitNoisyQuotes]
+[-ValuesAndExpressions::RequireNumberSeparators]
+[-Subroutines::ProhibitBuiltinHomonyms]
+[-Variables::ProhibitPunctuationVars]
+[-NamingConventions::ProhibitAmbiguousNames]
+[-Subroutines::ProhibitManyArgs]
+[-ValuesAndExpressions::RequireConstantVersion]

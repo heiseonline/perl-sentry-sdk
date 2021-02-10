@@ -1,0 +1,32 @@
+Revision history for Sentry-SDK
+
+{{$NEXT}}
+
+0.11.1  2021-02-10 23:43:09 CET
+
+  - feat: improve the `CGI::Application` plugin
+  - fix(hub): fix error in `set_tags()`
+
+0.11.0  2021-02-10 22:27:39 CET
+
+  - feat(tracing): support the `traces_sample_rate` option
+
+0.10.5  2021-02-10 11:18:15 CET
+
+  - docs: add POD
+
+0.10.4  2021-02-10 10:28:34 CET
+
+  - fix: add missing requirements (Perl v5.24.0)
+
+0.10.3  2021-02-09 00:28:01 CET
+
+  - fix: use new Sentry module name in framework integrations
+
+0.10.2  2021-02-08 23:54:59 CET
+
+  - fix: rename Mojolicious::Plugin::Sentry -> Mojolicious::Plugin::SentrySDK
+
+0.10.1  2021-02-08 23:46:34 CET
+
+  - Initial release

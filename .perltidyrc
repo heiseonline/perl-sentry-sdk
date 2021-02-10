@@ -1,0 +1,32 @@
+-pbp     # Start with Perl Best Practices
+-w       # Show all warnings
+-iob     # Ignore old breakpoints
+-l=80    # 80 characters per line
+-mbl=1   # No more than 1 blank lines
+-i=2     # Indentation is 2 columns
+-ci=2    # Continuation indentation is 4 columns
+-vt=0    # Less vertical tightness
+-pt=2    # High parenthesis tightness
+-bt=2    # High brace tightness
+-sbt=2   # High square bracket tightness
+-wn      # Weld nested containers
+-isbc    # Don't indent comments without leading space
+-xci
+
+-fsb='# prettier-ignore-start'
+-fse='# prettier-ignore-end'
+
+# horizontal
+-nsfs   # no space for semicolon in for
+-tso    # tight secret operators
+-bt=1  # Prettier brace tightness
+-bbt=1  # Prettier block brace tightness (default 0)
+-bar    # opening brace always on right
+
+# vertical
+-ce     # Prettier cuddled else
+#-sot    # stack opening tokens
+
+# comments
+-nbbc   # no blanks before comments (?)
+-isbc   # indent (only) spaced block comments
