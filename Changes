@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - feat(tracing): support the `traces_sample_rate` option
+
 0.10.5  2021-02-10 11:18:15 CET
 
   - docs: add POD

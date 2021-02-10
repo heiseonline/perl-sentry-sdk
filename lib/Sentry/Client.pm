@@ -143,6 +143,10 @@ sub _apply_client_options ($self, $event) {
   return;
 }
 
+sub get_options ($self) {
+  return $self->_options;
+}
+
 sub _apply_integrations_metadata ($self, $event) {
   $event->{sdk} //= {};
 
