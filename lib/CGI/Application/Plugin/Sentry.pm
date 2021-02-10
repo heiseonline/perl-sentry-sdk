@@ -58,3 +58,23 @@ CGI::Application->add_callback(
 );
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+CGI::Application::Plugin::Sentry - Sentry plugin for CGI::Application
+
+=head1 SYNOPSIS
+
+=head1 DESCRIPTION
+
+=head1 OPTIONS
+
+=head1 METHODS
+
+=head1 SEE ALSO
+
+L<Sentry::SDK>.
+
+=cut
