@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - fix: add missing requirements (Perl v5.24.0)
+
 0.10.3  2021-02-09 00:28:01 CET
 
   - fix: use new Sentry module name in framework integrations
