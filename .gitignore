@@ -5,8 +5,6 @@ bak
 *.tmp.*
 !Build/
 .last_cover_stats
-/META.yml
-/META.json
 /MYMETA.*
 *.o
 *.pm.tdy
