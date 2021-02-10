@@ -6,7 +6,7 @@ use Mojo::Util 'dumper';
 use Sentry::Client;
 use Sentry::Hub;
 
-our $VERSION = version->declare('0.10.4');
+our $VERSION = version->declare('0.10.5');
 
 sub _call_on_hub ($method, @args) {
   my $hub = Sentry::Hub->get_current_hub();
