@@ -29,3 +29,4 @@ perltidyrc = .perltidyrc
 [-NamingConventions::ProhibitAmbiguousNames]
 [-Subroutines::ProhibitManyArgs]
 [-ValuesAndExpressions::RequireConstantVersion]
+[-TestingAndDebugging::RequireTestLabels]
