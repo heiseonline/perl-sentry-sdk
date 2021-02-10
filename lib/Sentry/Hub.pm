@@ -29,10 +29,6 @@ sub bind_client ($self, $client) {
   $client->setup_integrations();
 }
 
-sub _get_top_scope ($self) {
-  return @{ $self->scopes }[0];
-}
-
 sub get_current_scope ($package) {
   return @{ $package->get_current_hub()->scopes }[-1];
 }
