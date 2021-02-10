@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+v1.0.0  2021-02-11 00:10:25 CET
+
   - Configure the packages main module
 
 0.11.2  2021-02-11 00:01:05 CET
