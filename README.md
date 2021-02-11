@@ -53,6 +53,10 @@ Enables your custom integration. Optional.
 
 This can be used to disable integrations that are added by default. When set to a falsy value, no default integrations are added.
 
+### debug
+
+Enables debug printing.
+
 ## add\_breadcrumb
 
     Sentry::SDK->add_breadcrumb({
