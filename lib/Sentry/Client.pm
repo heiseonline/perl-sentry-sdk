@@ -78,8 +78,10 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
   return {
     exception => {
       values => [{
-        type       => ref($exception),
-        value      => $exception->to_string,
+        type  => ref($exception),
+        value => $exception->can('to_string')
+        ? $exception->to_string
+        : $exception,
         module     => ref($exception),
         stacktrace => $stacktrace,
       }]
