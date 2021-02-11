@@ -2,6 +2,7 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - fix(dsn): fix URL building when standard ports are used
   - feat(sdk): add `debug` option
 
 v1.0.1  2021-02-11 09:42:35 CET
