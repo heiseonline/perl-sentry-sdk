@@ -9,6 +9,7 @@ use Sentry::SDK;
 CGI::Application->add_callback(
   init => sub ($c, @args) {
     my $options = $c->param('sentry_options');
+    warn '!!!!!!!!!!!!!!!!!!', dumper($options);
     Sentry::SDK->init($options);
 
     Sentry::SDK->configure_scope(sub ($scope) {

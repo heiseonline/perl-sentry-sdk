@@ -5,6 +5,7 @@ use version 0.77;
 use Mojo::Util 'dumper';
 use Sentry::Client;
 use Sentry::Hub;
+use Sentry::Logger 'logger';
 
 our $VERSION = version->declare('v1.0.1');
 
@@ -34,6 +35,8 @@ sub init ($package, $options = {}) {
   $options->{_metadata}            //= {};
   $options->{_metadata}{sdk}
     = { name => 'sentry.perl', packages => [], version => $VERSION };
+
+  logger->active_contexts(['.*']) if $options->{debug};
 
   _init_and_bind($options);
 }
@@ -131,6 +134,10 @@ Enables your custom integration. Optional.
 =head3 default_integrations
 
 This can be used to disable integrations that are added by default. When set to a falsy value, no default integrations are added.
+
+=head3 debug
+
+Enables debug printing.
 
 =head2 add_breadcrumb
 
