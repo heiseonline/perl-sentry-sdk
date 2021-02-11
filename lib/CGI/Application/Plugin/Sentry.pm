@@ -66,11 +66,7 @@ CGI::Application->add_callback(
     # Does anyone know how to get the HTTP respnose status code using $c?
     $transaction->set_http_status(HTTP_OK);
     $transaction->finish();
-  }
-);
 
-CGI::Application->add_callback(
-  teardown => sub ($c) {
     Sentry::Hub->get_current_hub()->pop_scope();
   }
 );

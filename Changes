@@ -2,6 +2,7 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - fix(CGI::Application::Plugin::Sentry): handle scope end in prerun stage
   - fix: fix exception handling when the exception object does not have a `to_string` method
   - fix(dsn): fix URL building when standard ports are used
   - feat(sdk): add `debug` option
