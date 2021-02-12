@@ -4,6 +4,7 @@ Revision history for Sentry-SDK
 
 v1.0.2  2021-02-11 15:38:56 CET
 
+  - fix "Too few arguments for subroutine" warning
   - fix(CGI::Application::Plugin::Sentry): handle scope end in prerun stage
   - fix: fix exception handling when the exception object does not have a `to_string` method
   - fix(dsn): fix URL building when standard ports are used
