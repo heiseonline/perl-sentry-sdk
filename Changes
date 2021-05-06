@@ -1,6 +1,8 @@
 Revision history for Sentry-SDK
 
 {{$NEXT}}
+
+v1.0.3  2021-05-06 16:20:47 CEST
   
   - fix "Too few arguments for subroutine" warning
 
