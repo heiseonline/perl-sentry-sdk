@@ -38,7 +38,7 @@ CGI::Application->add_callback(
       $scope->set_tags({
         runtime => "Perl $]",
         url     => $c->query->url(-full => 1, -path => 1, -query => 1),
-        runmode => $c->get_current_runmode,
+        runmode => $rm,
       });
     });
 
