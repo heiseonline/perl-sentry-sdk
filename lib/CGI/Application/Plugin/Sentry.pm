@@ -5,6 +5,7 @@ use CGI::Application;
 use HTTP::Status ':constants';
 use Mojo::Util 'dumper';
 use Sentry::SDK;
+use Sys::Hostname 'hostname';
 
 my $_initialized;
 
@@ -18,7 +19,7 @@ CGI::Application->add_callback(
     Sentry::SDK->init($options);
 
     Sentry::SDK->configure_scope(sub ($scope) {
-      $scope->set_tags({ runtime => "Perl $]" });
+      $scope->set_tags({ runtime => "Perl $]", server_name => hostname });
     });
 
     $_initialized = 1;
