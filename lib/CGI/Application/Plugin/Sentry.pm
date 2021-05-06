@@ -17,12 +17,6 @@ CGI::Application->add_callback(
     my $options = $c->param('sentry_options');
     Sentry::SDK->init($options);
 
-    Sentry::SDK->configure_scope(sub ($scope) {
-      $scope->set_tags({
-        runtime => "Perl $]",
-        url     => $c->query->url(-full => 1, -path => 1, -query => 1),
-      });
-    });
     $_initialized = 1;
   }
 );
@@ -35,6 +29,13 @@ CGI::Application->add_callback(
 
 CGI::Application->add_callback(
   prerun => sub ($c, $rm) {
+    Sentry::SDK->configure_scope(sub ($scope) {
+      $scope->set_tags({
+        runtime => "Perl $]",
+        url     => $c->query->url(-full => 1, -path => 1, -query => 1),
+      });
+    });
+
     Sentry::Hub->get_current_hub()->push_scope();
 
     Sentry::SDK->configure_scope(sub ($scope) {
