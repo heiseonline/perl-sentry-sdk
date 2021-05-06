@@ -6,8 +6,14 @@ use HTTP::Status ':constants';
 use Mojo::Util 'dumper';
 use Sentry::SDK;
 
+my $_initialized;
+
 CGI::Application->add_callback(
   init => sub ($c, @args) {
+    if ($_initialized) {
+      return;
+    }
+
     my $options = $c->param('sentry_options');
     Sentry::SDK->init($options);
 
@@ -17,6 +23,7 @@ CGI::Application->add_callback(
         url     => $c->query->url(-full => 1, -path => 1, -query => 1),
       });
     });
+    $_initialized = 1;
   }
 );
 
