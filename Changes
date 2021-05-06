@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - fix(CGI::Application::Plugin::Sentry): provide `runmode` and `server_name` tags
+
 v1.0.3  2021-05-06 16:20:47 CEST
   
   - fix "Too few arguments for subroutine" warning
