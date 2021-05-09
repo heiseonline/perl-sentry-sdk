@@ -9,7 +9,7 @@ Sentry::SDK - sentry.io integration
     Sentry::SDK->init({
       dsn => "https://examplePublicKey@o0.ingest.sentry.io/0",
 
-      # Adjusting this value in production
+      # Adjust this value in production
       traces_sample_rate => 1.0,
     });
 
@@ -94,7 +94,7 @@ Captures a manually created event and sends it to Sentry.
 
     Sentry::SDK->configure_scope(sub ($scope) {
       $scope->set_tag(foo => "bar");
-      $scope->set-user({id => 1, email => "john.doe@example.com"});
+      $scope->set_user({id => 1, email => "john.doe@example.com"});
     });
 
 When an event is captured and sent to Sentry, event data with extra information will be merged from the current scope. The `configure_scope` function can be used to reconfigure the current scope. This for instance can be used to add custom tags or to inform sentry about the currently authenticated user. See [Sentry::Hub::Scope](https://metacpan.org/pod/Sentry%3A%3AHub%3A%3AScope) for further information.
