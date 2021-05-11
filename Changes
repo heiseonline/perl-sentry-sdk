@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+v1.0.8  2021-05-11 14:48:13 CEST
+
   - fix: Ensure integrations are initialized once
   - fix(CGI::Application::Plugin::Sentry): Ensure clean state when initializing the app
 
