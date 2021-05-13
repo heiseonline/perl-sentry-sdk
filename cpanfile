@@ -6,6 +6,7 @@ requires 'Readonly';
 requires 'Time::HiRes';
 requires 'Try::Tiny';
 requires 'UUID::Tiny';
+requires 'perl', 'v5.24.0';
 
 suggests 'Cpanel::JSON::XS';
 suggests 'IO::Socket::Socks';
