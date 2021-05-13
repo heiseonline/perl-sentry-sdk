@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Added missing minimum List::Util version
+
 v1.0.8  2021-05-11 14:48:13 CEST
 
   - fix: Ensure integrations are initialized once

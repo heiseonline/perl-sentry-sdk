@@ -1,6 +1,6 @@
 requires 'Clone';
 requires 'HTTP::Status';
-requires 'List::Util';
+requires 'List::Util', '1.44';
 requires 'Mojolicious';
 requires 'Readonly';
 requires 'Time::HiRes';
