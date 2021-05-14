@@ -15,6 +15,7 @@ suggests 'Net::DNS::Native';
 suggests 'Role::Tiny';
 
 on 'test' => sub {
+  requires 'LWP::UserAgent';
   requires 'Perl::Critic';
   requires 'Test::Pod::Coverage';
   requires 'Test::Pod';
