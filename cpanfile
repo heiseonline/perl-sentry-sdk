@@ -19,6 +19,7 @@ on 'test' => sub {
   requires 'Test::Pod';
   requires 'Test::Pod::Coverage';
   requires 'Test::Spec';
+  requires 'Test::Snapshot';
 };
 
 on develop => sub {
