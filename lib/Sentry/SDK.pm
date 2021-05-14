@@ -55,7 +55,7 @@ sub capture_message ($self, $message, $capture_context = undef) {
 }
 
 sub capture_event ($package, $event) {
-  _call_on_hub('capture_exception', $event);
+  _call_on_hub('capture_event', $event);
 }
 
 sub capture_exception ($package, $exception, $capture_context = undef) {

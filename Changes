@@ -2,6 +2,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Fixed `Sentry::SDK->capture_event` to invoke "capture event"
+
 v1.0.10  2021-05-14 08:14:46 CEST
 
   - Fixed required minimum Perl version
