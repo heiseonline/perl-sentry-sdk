@@ -16,10 +16,10 @@ suggests 'Role::Tiny';
 
 on 'test' => sub {
   requires 'Perl::Critic';
-  requires 'Test::Pod';
   requires 'Test::Pod::Coverage';
-  requires 'Test::Spec';
+  requires 'Test::Pod';
   requires 'Test::Snapshot';
+  requires 'Test::Spec';
 };
 
 on develop => sub {
