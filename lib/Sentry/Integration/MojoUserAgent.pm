@@ -50,7 +50,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
       })
         if $self->breadcrumbs;
 
-      if ($self->tracing) {
+      if ($span) {
         $span->set_http_status($tx->res->code);
         $span->finish();
       }
