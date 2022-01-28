@@ -31,7 +31,6 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
           data        => {
             url         => $tx->req->url->to_string,
             method      => $tx->req->method,
-            status_code => $tx->res->code,
           },
         });
 
@@ -51,7 +50,9 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
         if $self->breadcrumbs;
 
       if ($span) {
-        $span->set_http_status($tx->res->code);
+        if (my $http_status = $tx->res->code) {
+          $span->set_http_status($http_status);
+        }
         $span->finish();
       }
 
