@@ -81,7 +81,8 @@
    "version" : "v1.0.11",
    "x_contributors" : [
       "bsd <bsd@heise.de>",
-      "pmb0 <2140915+pmb0@users.noreply.github.com>"
+      "pmb0 <2140915+pmb0@users.noreply.github.com>",
+      "Veesh Goldman <rabbiveesh@gmail.com>"
    ],
    "x_generated_by_perl" : "v5.34.0",
    "x_serialization_backend" : "Cpanel::JSON::XS version 4.26",
