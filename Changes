@@ -2,6 +2,10 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Fixed bugs in the `Mojolicious::Plugin::SentrySDK` integration
+  - Fix: swap the std output streams for error vs non-error cases
+  - Fix: set HTTP status only if one exists
+  - Fix: `$span` being used without being set in `Sentry::Integration::LwpUserAgent`
   - Fixed `Sentry::SDK->capture_event` to invoke "capture event"
 
 v1.0.10  2021-05-14 08:14:46 CEST
