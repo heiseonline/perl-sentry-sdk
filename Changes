@@ -3,6 +3,7 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - The plugins for `Mojolicious` and `CGI::Application` have been fixed to correctly include the following request information in the Sentry event: URL, method, query parameters, header and environment variables.
   - Support the `$SENTRY_DEBUG` environment variable
 
 v1.0.12  2022-01-31 10:25:48 CET
