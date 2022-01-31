@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+v1.0.12  2022-01-31 10:25:48 CET
+
   - Fix: do not send send events w/ no DSN
 
 v1.0.11  2022-01-28 09:50:38 CET
