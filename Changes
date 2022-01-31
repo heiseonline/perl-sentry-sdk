@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Support the `$SENTRY_DEBUG` environment variable
+
 v1.0.12  2022-01-31 10:25:48 CET
 
   - Fix: do not send send events w/ no DSN

@@ -36,7 +36,7 @@ sub init ($package, $options = {}) {
   $options->{_metadata}{sdk}
     = { name => 'sentry.perl', packages => [], version => $VERSION };
 
-  logger->active_contexts(['.*']) if $options->{debug};
+  logger->active_contexts(['.*']) if $options->{debug} // $ENV{SENTRY_DEBUG};
 
   _init_and_bind($options);
 }
