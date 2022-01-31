@@ -40,12 +40,12 @@ sub register ($self, $app, $conf) {
 
         try {
           $next->();
-
         } catch {
           Sentry::SDK->capture_exception($_);
           $c->reply->exception($_)
         } finally {
-          $transaction->set_http_status($c->res->code);
+          my $status = $c->res->code;
+          $transaction->set_http_status() if $status;
           $transaction->finish();
         }
 
