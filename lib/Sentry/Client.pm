@@ -148,6 +148,7 @@ sub _apply_client_options ($self, $event) {
 
   $event->{message} = truncate($event->{message}, $max_value_length)
     if $event->{message};
+  $event->{release} = $options->{release} if $options->{release};
 
   return;
 }
