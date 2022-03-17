@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+v1.0.18  2022-03-17 12:49:16 CET
+
   - Fix: The event level of an exception should be "error".
 
 v1.0.17  2022-03-15 08:21:52 CET
