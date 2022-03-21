@@ -57,6 +57,7 @@
       },
       "test" : {
          "requires" : {
+            "Capture::Tiny" : "0",
             "LWP::UserAgent" : "0",
             "Perl::Critic" : "0",
             "Test::Exception" : "0",
@@ -79,7 +80,7 @@
          "web" : "https://github.com/heiseonline/perl-sentry-sdk"
       }
    },
-   "version" : "v1.0.18",
+   "version" : "v1.0.19",
    "x_contributors" : [
       "bsd <bsd@heise.de>",
       "pmb0 <2140915+pmb0@users.noreply.github.com>",
