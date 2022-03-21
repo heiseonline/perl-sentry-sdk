@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Fix: Properly determine the URL in the CGI::Application plugin.
+
 v1.0.18  2022-03-17 12:49:16 CET
 
   - Fix: The event level of an exception should be "error".
