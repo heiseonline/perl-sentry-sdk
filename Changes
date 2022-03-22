@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Chore: Fixed missing dev/optional deps.
+
 v1.0.19  2022-03-21 18:38:01 CET
 
   - Fix: Properly determine the URL in the CGI::Application plugin.

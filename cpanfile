@@ -8,6 +8,11 @@ requires 'Try::Tiny';
 requires 'UUID::Tiny';
 requires 'perl', 'v5.24.1';
 
+feature 'cgiapp', 'CGI::Application plugin' => sub {
+  requires 'CGI';
+  requires 'CGI::Application';
+};
+
 suggests 'Cpanel::JSON::XS';
 suggests 'IO::Socket::Socks';
 suggests 'IO::Socket::SSL';
@@ -16,6 +21,8 @@ suggests 'Role::Tiny';
 
 on 'test' => sub {
   requires 'Capture::Tiny';
+  requires 'CGI';
+  requires 'CGI::Application';
   requires 'LWP::UserAgent';
   requires 'Perl::Critic';
   requires 'Test::Exception';
