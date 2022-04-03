@@ -33,7 +33,7 @@ describe 'Sentry::Tracing::Transaction' => sub {
       $tx->sampled(1);
       $tx->set_name('foo');
 
-      isn $tx->finish();
+      $tx->finish();
 
       is $hub->captured_events->@*,               1;
       is $hub->captured_events->[0]{transaction}, 'foo';
