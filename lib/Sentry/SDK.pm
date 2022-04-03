@@ -138,7 +138,7 @@ A number between 0 and 1, controlling the percentage chance a given transaction 
     };
   });
 
-C<beforeSend> is called immediately before the event is sent to the server, so it’s the final place where you can edit its data. It receives the event object as a parameter, so you can use that to modify the event’s data or drop it completely (by returning `undef`) based on custom logic and the data available on the event.
+C<beforeSend> is called immediately before the event is sent to the server, so it’s the final place where you can edit its data. It receives the event object as a parameter, so you can use that to modify the event’s data or drop it completely (by returning C<undef>) based on custom logic and the data available on the event.
 
 =head3 integrations
 
