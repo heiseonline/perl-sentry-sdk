@@ -64,6 +64,28 @@ describe 'Sentry::Client' => sub {
       is_deeply $event{tags}, \%tags;
     };
   };
+
+  describe 'before_send' => sub {
+    it 'before_send alters the event object' => sub {
+      $client->_options->{before_send} = sub ($event) {
+        $event->{dist} = 'abc';
+        return $event;
+      };
+
+      $client->capture_message('katze');
+      $transport->expect_to_have_sent_once;
+      $transport->expect_to_have_sent(dist => 'abc');
+    };
+
+    it 'discarded the event' => sub {
+      $client->_options->{before_send} = sub ($event) {
+        return undef;
+      };
+
+      $client->capture_message('katze');
+      $transport->expect_not_to_have_sent;
+    };
+  };
 };
 
 runtests;
