@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+v1.2.1  2022-04-06 00:07:22 CEST
+
   - Fix: fix runtime error while setting the transaction name.
 
 v1.2.0  2022-04-05 23:34:45 CEST
