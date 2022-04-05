@@ -51,7 +51,7 @@ use Test::Spec;
   sub adds_breadcrumb ($self) {
     Sentry::SDK->add_breadcrumb({ category => 'foo', message => 'hello' });
     Sentry::SDK->capture_message('hello');
-    $self->render(text => 'bla!');
+    $self->render(text => 'breadcrumb added!');
   }
 
   sub dies { die 'boom' }
@@ -75,7 +75,7 @@ describe 'Mojolicious::Plugin::SentrySDK' => sub {
   };
 
   it 'does not crash the application' => sub {
-    $t->get_ok('/')->status_is(HTTP_OK)->text_is('Hello!');
+    $t->get_ok('/')->status_is(HTTP_OK)->content_is('Hello World!');
   };
 
   it 'captures exceptions' => sub {
@@ -94,7 +94,7 @@ describe 'Mojolicious::Plugin::SentrySDK' => sub {
     my %do_not_track = ('x-sentry-auth' => 1);
     %do_not_track = ();
     $t->get_ok('/adds-breadcrumb' => \%do_not_track)->status_is(HTTP_OK)
-      ->text_is('Hello!');
+      ->content_is('breadcrumb added!');
 
     # Notification; Transaction
     is $http->requests->@*, 2;
