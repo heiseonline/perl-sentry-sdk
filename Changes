@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+v1.2.0  2022-04-05 23:34:45 CEST
+
   - Feat: support global event processors
 
 v1.1.0  2022-04-04 09:18:13 CEST
