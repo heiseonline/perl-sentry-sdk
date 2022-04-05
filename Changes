@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Feat: support global event processors
+
 v1.1.0  2022-04-04 09:18:13 CEST
 
   - Feat: support `before_send` callback to alter or drop events.
