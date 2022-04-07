@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Fix(deps): require Mojolicious >= 8
+
 v1.2.1  2022-04-06 00:07:22 CEST
 
   - Fix: fix runtime error while setting the transaction name.
