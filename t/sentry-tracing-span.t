@@ -61,6 +61,31 @@ describe 'Sentry::Tracing::Span' => sub {
     $span->finish();
     ok defined $span->timestamp;
   };
+
+  describe 'to_trace_parent()' => sub {
+    before each => sub {
+      $span->trace_id('traceid')->span_id('spanid');
+
+    };
+
+    it 'sampled' => sub {
+      $span->sampled(1);
+
+      is $span->to_trace_parent, 'traceid-spanid-1';
+    };
+
+    it 'not sampled' => sub {
+      $span->sampled(0);
+
+      is $span->to_trace_parent, 'traceid-spanid0';
+    };
+
+    it 'not sampled' => sub {
+      $span->sampled(undef);
+
+      is $span->to_trace_parent, 'traceid-spanid';
+    };
+  };
 };
 
 runtests;
