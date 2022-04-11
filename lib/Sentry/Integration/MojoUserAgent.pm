@@ -25,13 +25,13 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
 
       if ($self->tracing && (my $parent_span = $hub->get_scope()->get_span)) {
         $span = $parent_span->start_child({
-          op          => 'http',
-          name        => 'My Transaction',
+          op          => 'http.client',
           description => $tx->req->method . ' ' . $tx->req->url->to_string,
           data        =>
             { url => $tx->req->url->to_string, method => $tx->req->method, },
         });
 
+        $tx->req->headers->add('sentry-trace' => $span->to_trace_parent);
       }
 
       my $result = $orig->($ua, $tx, $cb);

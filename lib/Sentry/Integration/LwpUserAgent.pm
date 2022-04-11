@@ -4,14 +4,15 @@ use Mojo::Base 'Sentry::Integration::Base', -signatures;
 use Mojo::Util qw(dumper);
 use Sentry::Util 'around';
 
-has breadcrumbs => 1;
-has tracing     => 1;
+has _package_name => 'LWP::UserAgent';
+has breadcrumbs   => 1;
+has tracing       => 1;
 
 sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
   return if (!$self->breadcrumbs && !$self->tracing);
 
   around(
-    'LWP::UserAgent',
+    $self->_package_name,
     request => sub ($orig, $lwp, $request, @args) {
 
       my $url = $request->uri;
@@ -26,7 +27,6 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
       if ($self->tracing && (my $parent_span = $hub->get_scope()->get_span)) {
         $span = $parent_span->start_child({
           op          => 'http',
-          name        => 'My Transaction',
           description => $request->method . ' ' . $request->uri,
           data        => {
             url     => $request->uri,
@@ -34,6 +34,8 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
             headers => $request->headers,
           },
         });
+
+        $request->header('sentry-trace' => $span->to_trace_parent);
       }
 
       my $result = $orig->($lwp, $request, @args);

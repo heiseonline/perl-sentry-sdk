@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Feat: set the `sentry-trace` request header in HTTP client integrations (`LWP::UserAgent`, `Mojo::UserAgent`)
+
 v1.2.2  2022-04-07 08:04:45 CEST
 
   - Fix(deps): require Mojolicious >= 8
