@@ -67,7 +67,7 @@ describe 'Sentry::Client' => sub {
 
   describe 'before_send' => sub {
     it 'before_send alters the event object' => sub {
-      $client->_options->{before_send} = sub ($event) {
+      $client->_options->{before_send} = sub ($event, $hint) {
         $event->{dist} = 'abc';
         return $event;
       };
@@ -78,7 +78,7 @@ describe 'Sentry::Client' => sub {
     };
 
     it 'discarded the event' => sub {
-      $client->_options->{before_send} = sub ($event) {
+      $client->_options->{before_send} = sub ($event, $hint) {
         return undef;
       };
 

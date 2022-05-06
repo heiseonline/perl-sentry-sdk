@@ -44,14 +44,8 @@ sub init ($package, $options = {}) {
 sub capture_message ($self, $message, $capture_context = undef) {
   my $level = ref($capture_context) ? undef : $capture_context;
 
-  _call_on_hub(
-    'capture_message',
-    $message, $level,
-    {
-      originalException => $message,
-      capture_context   => ref($capture_context) ? $capture_context : undef,
-    }
-  );
+  _call_on_hub('capture_message', $message, $level,
+    { capture_context => ref($capture_context) ? $capture_context : undef, });
 }
 
 sub capture_event ($package, $event) {
@@ -126,13 +120,15 @@ A number between 0 and 1, controlling the percentage chance a given transaction 
 =head3 before_send
 
   Sentry::SDK->init({
-    before_send => sub ($event) {
-      $event->tags->{foo} = 'bar';
+    before_send => sub ($event, $hint) {
 
-      # discard event
-      if (rand() < 0.5) {
+      # discard event we don't care about
+      if (ref($hint->{original_exception}) eq 'My::Ignorable::Exception') {
         return undef;
       }
+
+      # add a custom tag otherwise
+      $event->tags->{foo} = 'bar';
 
       return $event;
     };

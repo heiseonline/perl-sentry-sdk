@@ -195,8 +195,8 @@ sub _prepare_event ($self, $event, $scope, $hint = undef) {
   # This allows us to prevent unnecessary copying of data if `capture_context`
   # is not provided.
   my $final_scope = $scope;
-  if (exists(($hint // {})->{capture_context})) {
-    $final_scope = $scope->clone()->update($hint->{captureconsole});
+  if (($hint // {})->{capture_context}) {
+    $final_scope = $scope->clone()->update($hint->{capture_context});
   }
 
   # We prepare the result here with a resolved Event.
@@ -217,8 +217,10 @@ sub _process_event ($self, $event, $hint, $scope) {
 
   my $is_transaction = ($event->{type} // '') eq 'transaction';
 
-  my $before_send     = $self->_options->{before_send} // sub ($event) {$event};
-  my $processed_event = $before_send->($prepared);
+  my $before_send = $self->_options->{before_send}
+    // sub ($event, $hint) {$event};
+
+  my $processed_event = $before_send->($prepared, $hint // {});
 
   die 'An event processor returned undef, will not send event.'
     unless $processed_event;

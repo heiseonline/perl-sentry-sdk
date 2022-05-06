@@ -84,30 +84,33 @@ sub _new_event_id ($self) {
 sub capture_message (
   $self, $message,
   $level = Sentry::Severity->Info,
-  $hint = undef
+  $hint = undef,
 ) {
   my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_message', $message, $level,
-    { event_id => $event_id });
+    { ($hint // {})->%*, event_id => $event_id });
 
   return $event_id;
 }
 
 sub capture_exception ($self, $exception, $hint = undef) {
+  $hint //= {};
   my $event_id = $self->_new_event_id();
 
+  $hint->{original_exception} = $exception;
+
   $self->_invoke_client('capture_exception', $exception,
-    { event_id => $event_id });
+    { $hint->%*, event_id => $event_id });
 
   return $event_id;
 }
 
-sub capture_event ($self, $event, $hint = {}) {
+sub capture_event ($self, $event, $hint = undef) {
   my $event_id = $self->_new_event_id();
 
   $self->_invoke_client('capture_event', $event,
-    { $hint->%*, event_id => $event_id });
+    { ($hint // {})->%*, event_id => $event_id });
 
   return $event_id;
 }

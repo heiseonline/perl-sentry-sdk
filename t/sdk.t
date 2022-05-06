@@ -91,7 +91,7 @@ describe 'Sentry::SDK' => sub {
       Sentry::SDK->capture_event($event);
 
       my $captured = $client->_captured_message;
-      isa_ok $captured->{scope},    'Sentry::Hub::Scope';
+      isa_ok $captured->{scope}, 'Sentry::Hub::Scope';
       is_deeply $captured->{event}, $event;
       is_UUID_string $captured->{hint}{event_id};
     };
@@ -102,7 +102,8 @@ describe 'Sentry::SDK' => sub {
 
       my $captured = $client->_captured_message;
       isa_ok $captured->{scope}, 'Sentry::Hub::Scope';
-      is $captured->{exception}, $exception;
+      is_deeply $captured->{exception}, $exception;
+      is_deeply $captured->{hint}{original_exception} => $exception;
       is_UUID_string $captured->{hint}{event_id};
     };
   };
