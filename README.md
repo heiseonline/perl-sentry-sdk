@@ -44,19 +44,21 @@ A number between 0 and 1, controlling the percentage chance a given transaction 
 ### before\_send
 
     Sentry::SDK->init({
-      before_send => sub ($event) {
-        $event->tags->{foo} = 'bar';
+      before_send => sub ($event, $hint) {
 
-        # discard event
-        if (rand() < 0.5) {
+        # discard event we don't care about
+        if (ref($hint->{original_exception}) eq 'My::Ignorable::Exception') {
           return undef;
         }
+
+        # add a custom tag otherwise
+        $event->tags->{foo} = 'bar';
 
         return $event;
       };
     });
 
-`before_send` is called immediately before the event is sent to the server, so it’s the final place where you can edit its data. It receives the event object as a parameter, so you can use that to modify the event’s data or drop it completely (by returning `undef`) based on custom logic and the data available on the event.
+`beforeSend` is called immediately before the event is sent to the server, so it’s the final place where you can edit its data. It receives the event object as a parameter, so you can use that to modify the event’s data or drop it completely (by returning `undef`) based on custom logic and the data available on the event.
 
 ### integrations
 
