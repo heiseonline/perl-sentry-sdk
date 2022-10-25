@@ -2,6 +2,7 @@ package Sentry::Stacktrace::Frame;
 use Mojo::Base -base, -signatures;
 
 use Mojo::Home;
+use Sentry::SourceFileRegistry;
 
 has [qw(package filename line subroutine)];
 has _source_file_registry => sub { Sentry::SourceFileRegistry->new };
