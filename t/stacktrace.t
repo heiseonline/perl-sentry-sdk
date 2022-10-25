@@ -87,6 +87,10 @@ describe 'Sentry::Stacktrace::Frame' => sub {
     is $frame_json->{context_line}, 'context line';
     is $frame_json->{post_context}, 'post context';
   };
+
+  it 'has relative filename' => sub {
+    is $frame_json->{file_name}, 'My/Module.pm';
+  };
 };
 
 runtests;

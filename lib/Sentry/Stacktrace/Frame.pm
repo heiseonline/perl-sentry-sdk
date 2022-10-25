@@ -2,6 +2,7 @@ package Sentry::Stacktrace::Frame;
 use Mojo::Base -base, -signatures;
 
 use Mojo::Home;
+use Mojo::File;
 use Sentry::SourceFileRegistry;
 
 has [qw(package filename line subroutine)];
@@ -18,11 +19,15 @@ sub _map_file_to_context ($self) {
     $self->line);
 }
 
+sub _relative_filename ($self) {
+    return Mojo::File::path($self->filename)->to_rel($self->_home)->to_string;
+}
+
 sub TO_JSON ($self) {
   return {
     in_app    => \($self->_is_in_app()),
     abs_path  => $self->filename,
-    file_name => 'bla',
+    file_name => $self->_relative_filename,
     lineno    => $self->line,
     package   => $self->package,
     function  => $self->subroutine,
