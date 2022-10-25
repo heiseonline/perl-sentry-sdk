@@ -18,7 +18,7 @@ use Test::Spec;
 
 {
 
-  package My::Exeption;
+  package My::Exception;
   use Mojo::Base -base;
 }
 
@@ -47,7 +47,7 @@ describe 'Sentry::SDK' => sub {
     it
       'does not throw if `exception` is an exception object other than Mojo::Exception'
       => sub {
-        $stacktrace->exception(My::Exeption->new);
+        $stacktrace->exception(My::Exception->new);
         lives_ok { $stacktrace->prepare_frames };
       };
   };
