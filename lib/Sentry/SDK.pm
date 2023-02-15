@@ -48,12 +48,14 @@ sub capture_message ($self, $message, $capture_context = undef) {
     { capture_context => ref($capture_context) ? $capture_context : undef, });
 }
 
-sub capture_event ($package, $event) {
-  _call_on_hub('capture_event', $event);
+sub capture_event ($package, $event, $capture_context = undef) {
+  _call_on_hub('capture_event', $event,
+    { capture_context => ref($capture_context) ? $capture_context : undef, });
 }
 
 sub capture_exception ($package, $exception, $capture_context = undef) {
-  _call_on_hub('capture_exception', $exception, $capture_context);
+  _call_on_hub('capture_exception', $exception, 
+    { capture_context => ref($capture_context) ? $capture_context : undef, });
 }
 
 sub configure_scope ($package, $cb) {

@@ -156,7 +156,11 @@ sub clone ($self) {
 }
 
 sub update ($self, $fields) {
-  $self->$_($fields->{$_}) for keys $fields->%*;
+  for (keys $fields->%*) {
+    my $methodName = "set_$_";
+    $self->$methodName($fields->{$_});
+  }
+  return $self;
 }
 
 sub get_global_event_processors () {
