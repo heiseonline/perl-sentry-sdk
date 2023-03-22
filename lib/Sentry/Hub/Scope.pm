@@ -14,7 +14,7 @@ has error_event_processors => sub { [] };
 has event_processors       => sub { [] };
 has extra                  => sub { {} };
 has fingerprint            => sub { [] };
-has level                  => Sentry::Severity->Info;
+has level                  => undef;
 has span                   => undef;
 has tags                   => sub { {} };
 has transaction_name       => undef;
@@ -121,7 +121,7 @@ sub apply_to_event ($self, $event, $hint = undef) {
   merge($event, $self, 'user')     if $self->user;
   merge($event, $self, 'contexts') if $self->contexts;
 
-  $event->{level} //= $self->level                if $self->level;
+  $event->{level} = $self->level                  if $self->level;
   $event->{transaction} = $self->transaction_name if $self->transaction_name;
 
   if ($self->span) {
