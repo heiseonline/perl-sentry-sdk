@@ -2,6 +2,7 @@ package Mojolicious::Plugin::SentrySDK;
 use Mojo::Base 'Mojolicious::Plugin', -signatures;
 
 use Sentry::SDK;
+use Sentry::Severity;
 use Try::Tiny;
 
 sub register ($self, $app, $conf) {
@@ -41,7 +42,7 @@ sub register ($self, $app, $conf) {
         try {
           $next->();
         } catch {
-          Sentry::SDK->capture_exception($_);
+          Sentry::SDK->capture_exception($_, { level => Sentry::Severity->Fatal });
           $c->reply->exception($_)
         } finally {
           my $status = $c->res->code;
