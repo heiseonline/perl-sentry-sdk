@@ -68,8 +68,7 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
   my $stacktrace = Sentry::Stacktrace->new({
     exception    => $exception,
     frame_filter => sub ($frame) {
-      index($frame->package, 'Sentry') == -1
-        && $frame->package !~ m{(Class::MOP|CGI::Carp|Try::Tiny)}xms;
+      $frame->module !~ m{^(Sentry::.*|Class::MOP|CGI::Carp|Try::Tiny)$}
     },
   });
 

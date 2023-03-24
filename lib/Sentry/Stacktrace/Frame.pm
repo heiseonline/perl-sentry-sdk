@@ -5,7 +5,7 @@ use Mojo::Home;
 use Mojo::File;
 use Sentry::SourceFileRegistry;
 
-has [qw(package filename line subroutine)];
+has [qw(module filename line subroutine)];
 has _source_file_registry => sub { Sentry::SourceFileRegistry->new };
 has _home                 => sub { Mojo::Home->new->detect };
 
@@ -29,15 +29,15 @@ sub TO_JSON ($self) {
     abs_path  => $self->filename,
     file_name => $self->_relative_filename,
     lineno    => $self->line,
-    package   => $self->package,
+    module    => $self->module,
     function  => $self->subroutine,
     %{ $self->_map_file_to_context() },
   };
 }
 
-sub from_caller ($package, $pkg, $filename, $line, $subroutine, @args) {
+sub from_caller ($package, $module, $filename, $line, $subroutine, @args) {
   return $package->new({
-    package    => $pkg,
+    module     => $module,
     filename   => $filename,
     line       => $line,
     subroutine => $subroutine
