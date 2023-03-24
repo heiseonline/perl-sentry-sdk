@@ -1,6 +1,7 @@
 package Sentry::Client;
 use Mojo::Base -base, -signatures;
 
+use Mojo::Exception;
 use Mojo::Home;
 use Mojo::Util 'dumper';
 use Sentry::DSN;
