@@ -131,11 +131,6 @@ sub apply_to_event ($self, $event, $hint = undef) {
       trace => $self->span->get_trace_context(),
       ($event->{contexts} // {})->%*
     };
-
-    if (my $transaction_name = $self->span->transaction->name) {
-      $event->{tags}
-        = { transaction => $transaction_name, ($event->{tags} // {})->%* };
-    }
   }
 
   $self->_apply_fingerprint($event);

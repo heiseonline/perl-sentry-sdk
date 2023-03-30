@@ -40,10 +40,11 @@ CGI::Application->add_callback(
       $scope->add_breadcrumb({ message => 'prerun' });
     });
 
-    my $method      = $c->query->request_method;
+    my $method = $c->query->request_method;
+    my $transaction_name = "$method $rm";
     my $transaction = Sentry::SDK->start_transaction(
       {
-        name    => "$method $rm",
+        name    => $transaction_name,
         op      => 'http.server',
         request => {
           url     => $request_uri,
@@ -58,6 +59,7 @@ CGI::Application->add_callback(
     $c->param('__sentry__transaction', $transaction);
 
     Sentry::SDK->configure_scope(sub ($scope) {
+      $scope->set_transaction_name($transaction_name);
       $scope->set_span($transaction);
     });
   }
