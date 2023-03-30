@@ -35,10 +35,7 @@ sub register ($self, $app, $conf) {
             },
           },
         );
-
-        Sentry::SDK->configure_scope(sub ($scope) {
-          $scope->set_span($transaction);
-        });
+        $scope->set_span($transaction);
 
         try {
           $next->();
