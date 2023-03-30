@@ -12,7 +12,7 @@ sub _get_cached_context_line ($self, $file) {
   my $context = $self->_cache->get($file);
 
   if (!$context) {
-    my $content = Mojo::File->new($file)->slurp;
+    my $content = -e $file ? Mojo::File->new($file)->slurp : '';
     $context
       = Sentry::SourceFileRegistry::ContextLine->new(content => $content);
     $self->_cache->set($file, $context);
