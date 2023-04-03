@@ -14,6 +14,7 @@ use Sentry::Hub;
 use Sentry::Logger 'logger';
 use Sentry::SDK;
 use Sentry::Severity;
+use Test::Exception;
 use Test::Snapshot;
 use Test::Spec;
 use UUID::Tiny 'is_UUID_string';
@@ -65,6 +66,14 @@ describe 'Sentry::SDK' => sub {
       Sentry::SDK->init();
 
       is_deeply_snapshot($hub->client->get_options, 'client options (env)');
+    };
+
+    it 'disables SDK if DSN is empty' => sub {
+      Sentry::SDK->init({ dsn => '' });
+
+      is($hub->client, undef, 'client is undefined');
+
+      lives_ok { Sentry::SDK->capture_message('foo') };
     };
   };
 
@@ -139,7 +148,7 @@ describe 'Sentry::SDK' => sub {
   };
 
   it 'start_transaction()' => sub {
-    Sentry::SDK->init({ traces_sample_rate => 1, });
+    Sentry::SDK->init({ dsn => 'abc', traces_sample_rate => 1, });
 
     my $tx
       = Sentry::SDK->start_transaction(
