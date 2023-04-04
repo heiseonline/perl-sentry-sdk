@@ -6,7 +6,7 @@ use Mojo::Loader qw(load_class);
 use Mojo::Util qw(dumper monkey_patch);
 use UUID::Tiny ':std';
 
-our @EXPORT_OK = qw(uuid4 truncate merge around);
+our @EXPORT_OK = qw(uuid4 truncate merge around restore_original);
 
 sub uuid4 {
   my $uuid = create_uuid_as_string(UUID_V4);
@@ -39,9 +39,16 @@ sub around ($package, $method, $cb) {
 
   monkey_patch $package, $method => sub { $cb->($orig, @_) };
 
-  $Patched{$key} = 1;
+  $Patched{$key} = $orig;
 
   return;
+}
+
+sub restore_original ($package, $method) {
+  my $key = $package . '::' . $method;
+  my $orig = $Patched{$key} or return;
+  monkey_patch $package, $method, $orig;
+  delete $Patched{$key};
 }
 
 1;
