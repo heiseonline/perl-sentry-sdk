@@ -1,6 +1,7 @@
 package Mojolicious::Plugin::SentrySDK;
 use Mojo::Base 'Mojolicious::Plugin', -signatures;
 
+use Mojolicious;
 use Sentry::SDK;
 use Try::Tiny;
 
@@ -36,6 +37,12 @@ sub register ($self, $app, $conf) {
           },
         );
         $scope->set_span($transaction);
+
+        $scope->add_event_processor(sub ($event, $hint) {
+          my $modules = $event->{modules} //= {};
+          $modules->{Mojolicious} = $Mojolicious::VERSION;
+          return $event;
+        });
 
         try {
           $next->();
