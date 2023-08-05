@@ -59,24 +59,20 @@ sub from_http_code ($package, $code) {
   return Sentry::Tracing::Status->Ok if $code < HTTP_BAD_REQUEST;
 
   if ($code >= HTTP_BAD_REQUEST && $code < HTTP_INTERNAL_SERVER_ERROR) {
-    given ($code) {
-      when (HTTP_UNAUTHORIZED)        { return Unauthenticated() }
-      when (HTTP_FORBIDDEN)           { return PermissionDenied() }
-      when (HTTP_NOT_FOUND)           { return NotFound() }
-      when (HTTP_CONFLICT)            { return AlreadyExists() }
-      when (HTTP_PRECONDITION_FAILED) { return FailedPrecondition() }
-      when (HTTP_TOO_MANY_REQUESTS)   { return ResourceExhausted() }
-      default                         { return InvalidArgument() }
-    }
+    if    ($code == HTTP_UNAUTHORIZED)        { return Unauthenticated() }
+    elsif ($code == HTTP_FORBIDDEN)           { return PermissionDenied() }
+    elsif ($code == HTTP_NOT_FOUND)           { return NotFound() }
+    elsif ($code == HTTP_CONFLICT)            { return AlreadyExists() }
+    elsif ($code == HTTP_PRECONDITION_FAILED) { return FailedPrecondition() }
+    elsif ($code == HTTP_TOO_MANY_REQUESTS)   { return ResourceExhausted() }
+    else                                      { return InvalidArgument() }
   }
 
   if ($code >= HTTP_INTERNAL_SERVER_ERROR) {
-    given ($code) {
-      when (HTTP_NOT_IMPLEMENTED)     { return Unimplemented() }
-      when (HTTP_SERVICE_UNAVAILABLE) { return Unavailable() }
-      when (HTTP_GATEWAY_TIMEOUT)     { return DeadlineExceeded() }
-      default                         { return InternalError() }
-    }
+    if    ($code == HTTP_NOT_IMPLEMENTED)     { return Unimplemented() }
+    elsif ($code == HTTP_SERVICE_UNAVAILABLE) { return Unavailable() }
+    elsif ($code == HTTP_GATEWAY_TIMEOUT)     { return DeadlineExceeded() }
+    else                                      { return InternalError() }
   }
 }
 
