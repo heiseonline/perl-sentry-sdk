@@ -34,7 +34,9 @@ use Test::Spec;
 
     $self->routes->get('/')->to('foo#index');
     $self->routes->get('/adds-breadcrumb')->to('foo#adds_breadcrumb');
-    $self->routes->get('/dies')->to('foo#dies');
+    my $route = $self->routes->get('/dies')->to(controller => 'foo');
+    $route->get('')->to(action => 'dies');
+    $route->get('/nested/:foo')->to(action => 'dies');
   }
 
   package MyApp::Controller::Foo;
@@ -108,6 +110,16 @@ describe 'Mojolicious::Plugin::SentrySDK' => sub {
     is $event{breadcrumbs}[-1]{category} => 'foo';
     is $event{breadcrumbs}[-1]{message}  => 'hello';
   };
+
+  it 'nested route has full transaction name' => sub {
+    $t->get_ok('/dies/nested/1')->status_is(HTTP_INTERNAL_SERVER_ERROR);
+    is $http->requests->@*, 2;
+
+    my %event = $http->requests->[0]{body}->%*;
+
+    is $event{tags}{transaction} => '/dies/nested/:foo';
+
+  }
 };
 
 runtests;

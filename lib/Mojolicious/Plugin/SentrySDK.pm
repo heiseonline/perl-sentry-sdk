@@ -21,7 +21,7 @@ sub register ($self, $app, $conf) {
         my %cookies = map { ($_->name, $_->value) } ($req->cookies // [])->@*;
         my $transaction = Sentry::SDK->start_transaction(
           {
-            name    => $c->match->endpoint->pattern->unparsed || '/',
+            name    => $c->match->endpoint->to_string || '/',
             op      => 'http.server',
             request => {
               url          => $req->url->to_abs->to_string,
