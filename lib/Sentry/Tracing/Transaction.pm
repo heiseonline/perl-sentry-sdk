@@ -19,7 +19,7 @@ sub finish ($self) {
 
   my %transaction = (
     contexts        => { trace => $self->get_trace_context(), },
-    spans           => $self->spans,
+    spans           => $self->_collect_spans(),
     start_timestamp => $self->start_timestamp,
     tags            => $self->tags,
     timestamp       => $self->timestamp,

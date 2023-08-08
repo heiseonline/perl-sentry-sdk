@@ -126,4 +126,9 @@ sub finish ($self) {
   $self->timestamp(time);
 }
 
+sub _collect_spans ($self) {
+  my @spans = map { ($_, $_->_collect_spans()->@*) } $self->spans->@*;
+  return \@spans || [];
+}
+
 1;
