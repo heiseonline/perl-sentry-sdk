@@ -84,7 +84,7 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
 
   return {
     event_id  => $hint && $hint->{event_id},
-    level     => Sentry::Severity->Error,
+    level     => ($hint && $hint->{level}) || Sentry::Severity->Error,
     exception => {
       values => [{
         type  => ref($exception),
