@@ -65,6 +65,48 @@ describe 'Sentry::Client' => sub {
     };
   };
 
+  describe 'capture_event()' => sub {
+    it 'event only' => sub {
+      my $event = { event => 'happened' };
+      $client->capture_event($event);
+
+      is $transport->events_sent->@*, 1;
+
+      my %event = $transport->events_sent->[0]->%*;
+      ok defined $event{event_id};
+      ok looks_like_number($event{timestamp});
+      is $event{event} => 'happened';
+    };
+
+    it 'w/ scope' => sub {
+      my %tags  = (foo => 'bar', bar => 'baz');
+      my $scope = Sentry::Hub::Scope->new(tags => {%tags});
+      my $event = { event => 'happened' };
+      $client->capture_event($event, undef, $scope);
+
+      is $transport->events_sent->@*, 1, 'Event was sent';
+
+      my %event = $transport->events_sent->[0]->%*;
+      is_deeply $event{tags}, \%tags;
+    };
+
+    it 'updates scope' => sub {
+      my %tags  = (foo => 'bar', bar => 'baz');
+      my $scope = Sentry::Hub::Scope->new(tags => {%tags});
+      my $event = { event => 'happened' };
+      $client->capture_event(
+        $event,
+        { capture_context => { tags => { foo => 'baz' } } },
+        $scope
+      );
+
+      is $transport->events_sent->@*, 1, 'Event was sent';
+
+      my %event = $transport->events_sent->[0]->%*;
+      is_deeply $event{tags}, { %tags, foo => 'baz' };
+    };
+  };
+
   describe 'before_send' => sub {
     it 'before_send alters the event object' => sub {
       $client->_options->{before_send} = sub ($event, $hint) {

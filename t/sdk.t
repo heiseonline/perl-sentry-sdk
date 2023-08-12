@@ -88,22 +88,26 @@ describe 'Sentry::SDK' => sub {
 
     it 'capture_event()' => sub {
       my $event = { foo => 'bar' };
-      Sentry::SDK->capture_event($event);
+      my $context = { level => Sentry::Severity->Error };
+      Sentry::SDK->capture_event($event, $context);
 
       my $captured = $client->_captured_message;
       isa_ok $captured->{scope}, 'Sentry::Hub::Scope';
       is_deeply $captured->{event}, $event;
+      is_deeply $captured->{hint}{capture_context}, $context;
       is_UUID_string $captured->{hint}{event_id};
     };
 
     it 'capture_exception()' => sub {
       my $exception = Mojo::Exception->new('ohoh');
-      Sentry::SDK->capture_exception($exception);
+      my $context = { level => Sentry::Severity->Warning };
+      Sentry::SDK->capture_exception($exception, $context);
 
       my $captured = $client->_captured_message;
       isa_ok $captured->{scope}, 'Sentry::Hub::Scope';
       is_deeply $captured->{exception}, $exception;
       is_deeply $captured->{hint}{original_exception} => $exception;
+      is_deeply $captured->{hint}{capture_context}, $context;
       is_UUID_string $captured->{hint}{event_id};
     };
   };
