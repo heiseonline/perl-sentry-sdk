@@ -75,6 +75,7 @@
             "Capture::Tiny" : "0",
             "Devel::Cycle" : "0",
             "LWP::UserAgent" : "0",
+            "PadWalker" : "0",
             "Perl::Critic" : "0",
             "Test::Exception" : "0",
             "Test::Pod" : "0",
@@ -96,7 +97,7 @@
          "web" : "https://github.com/heiseonline/perl-sentry-sdk"
       }
    },
-   "version" : "1.3.2",
+   "version" : "1.3.3",
    "x_contributors" : [
       "bsd <bsd@heise.de>",
       "Michael Budde <mbu@jobindex.dk>",
