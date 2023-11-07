@@ -23,6 +23,7 @@ on 'test' => sub {
   requires 'Capture::Tiny';
   requires 'CGI';
   requires 'CGI::Application';
+  requires 'Devel::Cycle';
   requires 'LWP::UserAgent';
   requires 'Perl::Critic';
   requires 'Test::Exception';

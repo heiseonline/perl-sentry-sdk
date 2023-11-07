@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Fix: add missing test dep
+
 1.3.1  2023-11-07 10:43:07 CET
 
   - Fix: memleak in `CGI::Application::Plugin::Sentry`
