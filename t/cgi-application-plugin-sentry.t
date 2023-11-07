@@ -84,12 +84,6 @@ describe 'CGI::Application::Plugin::Sentry' => sub {
     };
 
     it 'cleans itself up' => sub {
-
-      # my $app1 = My::Application->new;
-
-      # my ($stdout, $stderr) = capture { $app1->run };
-      # warn $stderr if $stderr;
-
       my ($cycle_out, $cycle_err) = capture { find_cycle($app) };
       warn $cycle_out if $cycle_out;
       die $cycle_err  if $cycle_err;
