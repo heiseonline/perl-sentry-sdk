@@ -24,6 +24,7 @@ on 'test' => sub {
   requires 'CGI';
   requires 'CGI::Application';
   requires 'Devel::Cycle';
+  requires 'PadWalker';
   requires 'LWP::UserAgent';
   requires 'Perl::Critic';
   requires 'Test::Exception';
