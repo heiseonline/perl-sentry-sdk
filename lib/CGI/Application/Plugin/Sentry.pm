@@ -75,6 +75,8 @@ CGI::Application->add_callback(
     $transaction->finish();
 
     Sentry::Hub->get_current_hub()->pop_scope();
+
+    $c->param('__sentry__transaction', undef);
   }
 );
 

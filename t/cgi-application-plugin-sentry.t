@@ -9,6 +9,7 @@ use lib Mojo::File->new(Cwd::realpath((caller)[1]))->sibling('lib')->to_string;
 
 use CGI;
 use Capture::Tiny qw(capture);
+use Devel::Cycle  qw(find_cycle);
 use Mock::Mojo::UserAgent;
 use Mojo::Util 'dumper';
 use Sentry::Hub;
@@ -46,6 +47,7 @@ $CGI::USE_PARAM_SEMICOLONS = 0;
 
   sub mode1 {
     Sentry::SDK->capture_message('hello');
+
     return 'abc';
   }
 }
@@ -79,6 +81,20 @@ describe 'CGI::Application::Plugin::Sentry' => sub {
       };
 
       die $err if $err;
+    };
+
+    it 'cleans itself up' => sub {
+
+      # my $app1 = My::Application->new;
+
+      # my ($stdout, $stderr) = capture { $app1->run };
+      # warn $stderr if $stderr;
+
+      my ($cycle_out, $cycle_err) = capture { find_cycle($app) };
+      warn $cycle_out if $cycle_out;
+      die $cycle_err  if $cycle_err;
+
+      is $cycle_out => '';
     };
 
     it 'it returns the unaltered http response' => sub {
