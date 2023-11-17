@@ -12,6 +12,7 @@ use Sentry::Hub::Scope;
 use Sentry::Severity;
 use Sentry::Tracing::Span;
 use Sentry::Tracing::Transaction;
+use Test::Exception;
 use Test::Spec;
 
 describe 'Sentry::Hub::Scope' => sub {
@@ -79,6 +80,12 @@ describe 'Sentry::Hub::Scope' => sub {
         = $scope->apply_to_event({ level => Sentry::Severity->Fatal });
 
       is $event->{foo}, 'bar';
+    };
+  };
+
+  describe 'set_extras' => sub {
+    it 'set_extras should not crash' => sub {
+      lives_ok { Sentry::Hub::Scope->new->set_extras({ foo => 'bar' }) };
     };
   };
 };
