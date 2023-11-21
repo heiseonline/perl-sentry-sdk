@@ -34,7 +34,9 @@ sub set_extra ($self, $name, $value) {
 }
 
 sub set_extras ($self, $extras) {
-  $self->extra = { %{ $self->extra }, %{$extras} };
+  for my $key (%$extras) {
+    $self->extra->{$key} = $extras->{$key};
+  }
 }
 
 sub set_tag ($self, $key, $value) {
