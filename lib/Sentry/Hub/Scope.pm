@@ -92,7 +92,12 @@ sub clear ($self) {
 
 sub add_breadcrumb ($self, $breadcrumb) {
   $breadcrumb->{timestamp} //= time;
-  push @{ $self->breadcrumbs }, $breadcrumb;
+  my $breadcrumbs = $self->breadcrumbs;
+  # Limit the number of breadcrumbs that we keep
+  if (scalar @$breadcrumbs >= ($ENV{SENTRY_SDK_MAX_BREADCRUMBS} || 100)) {
+    shift @$breadcrumbs;
+  }
+  push @$breadcrumbs, $breadcrumb;
 }
 
 sub clear_breadcrumbs ($self) {
