@@ -7,7 +7,7 @@ use Sentry::Client;
 use Sentry::Hub;
 use Sentry::Logger 'logger';
 
-our $VERSION = version->declare('1.3.7');
+our $VERSION = version->declare('1.3.8');
 
 sub _call_on_hub ($method, @args) {
   my $hub = Sentry::Hub->get_current_hub();
