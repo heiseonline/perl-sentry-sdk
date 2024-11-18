@@ -1,6 +1,7 @@
 package Sentry::Client;
 use Mojo::Base -base, -signatures;
 
+use Mojo::Exception;
 use Mojo::Home;
 use Mojo::Util 'dumper';
 use Sentry::DSN;
@@ -59,16 +60,6 @@ sub capture_event ($self, $event, $hint = undef, $scope = undef) {
   return $self->_capture_event($event, $hint, $scope);
 }
 
-sub _map_file_to_context ($self, $file, $line) {
-  return $self->_source_file_registry->get_context_lines($file, $line);
-}
-
-sub is_file_of_app ($frame) {
-  return scalar $frame->filename !~ m{\A /}xms;
-}
-
-sub _die { CORE::die ref $_[0] ? $_[0] : Mojo::Exception->new(shift)->trace }
-
 sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
   if (!ref($exception)) {
     $exception = Mojo::Exception->new($exception)->trace;
@@ -77,8 +68,7 @@ sub event_from_exception ($self, $exception, $hint = undef, $scope = undef) {
   my $stacktrace = Sentry::Stacktrace->new({
     exception    => $exception,
     frame_filter => sub ($frame) {
-      index($frame->package, 'Sentry') == -1
-        && $frame->package !~ m{(Class::MOP|CGI::Carp|Try::Tiny)}xms;
+      $frame->module !~ m{^(Sentry::.*|Class::MOP|CGI::Carp|Try::Tiny)$}
     },
   });
 
@@ -214,8 +204,6 @@ sub _prepare_event ($self, $event, $scope, $hint = undef) {
 
 sub _process_event ($self, $event, $hint, $scope) {
   my $prepared = $self->_prepare_event($event, $scope, $hint);
-
-  my $is_transaction = ($event->{type} // '') eq 'transaction';
 
   my $before_send = $self->_options->{before_send}
     // sub ($event, $hint) {$event};

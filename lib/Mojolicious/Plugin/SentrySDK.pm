@@ -1,6 +1,7 @@
 package Mojolicious::Plugin::SentrySDK;
 use Mojo::Base 'Mojolicious::Plugin', -signatures;
 
+use Mojolicious;
 use Sentry::SDK;
 use Try::Tiny;
 
@@ -19,9 +20,11 @@ sub register ($self, $app, $conf) {
 
       Sentry::Hub->get_current_hub()->with_scope(sub ($scope) {
         my %cookies = map { ($_->name, $_->value) } ($req->cookies // [])->@*;
+        my $transaction_name = $c->match->endpoint->to_string || '/';
+        $scope->set_transaction_name($transaction_name);
         my $transaction = Sentry::SDK->start_transaction(
           {
-            name    => $c->match->endpoint->to_string || '/',
+            name    => $transaction_name,
             op      => 'http.server',
             request => {
               url          => $req->url->to_abs->to_string,
@@ -33,9 +36,12 @@ sub register ($self, $app, $conf) {
             },
           },
         );
+        $scope->set_span($transaction);
 
-        Sentry::SDK->configure_scope(sub ($scope) {
-          $scope->set_span($transaction);
+        $scope->add_event_processor(sub ($event, $hint) {
+          my $modules = $event->{modules} //= {};
+          $modules->{Mojolicious} = $Mojolicious::VERSION;
+          return $event;
         });
 
         try {

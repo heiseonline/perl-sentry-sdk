@@ -119,7 +119,7 @@ describe 'Mojolicious::Plugin::SentrySDK' => sub {
 
     my %event = $http->requests->[0]{body}->%*;
 
-    is $event{tags}{transaction} => '/dies/nested/:foo';
+    is $event{transaction} => '/dies/nested/:foo';
 
   }
 };
