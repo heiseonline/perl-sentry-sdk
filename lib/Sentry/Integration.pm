@@ -6,12 +6,14 @@ use Sentry::Hub::Scope;
 use Sentry::Integration::DBI;
 use Sentry::Integration::DieHandler;
 use Sentry::Integration::MojoUserAgent;
+use Sentry::Integration::MojoTemplate;
 use Sentry::Integration::LwpUserAgent;
 
 my @Global_integrations = (
   Sentry::Integration::DieHandler->new,
   Sentry::Integration::DBI->new,
   Sentry::Integration::MojoUserAgent->new,
+  Sentry::Integration::MojoTemplate->new,
   Sentry::Integration::LwpUserAgent->new,
 );
 
