@@ -28,7 +28,7 @@ sub reset ($self) {
 
 sub bind_client ($self, $client) {
   $self->client($client);
-  $client->setup_integrations();
+  $client->setup_integrations() if $client;
 }
 
 sub get_current_scope ($package) {
@@ -66,7 +66,7 @@ sub get_scope ($self) {
 }
 
 sub _invoke_client ($self, $method, @args) {
-  my $client = $self->client;
+  my $client = $self->client or return;
   my $scope  = $self->get_current_scope;
 
   if ($client->can($method)) {
@@ -124,7 +124,7 @@ sub run ($self, $cb) {
 }
 
 sub sample ($self, $transaction, $sampling_context) {
-  my $client  = $self->client;
+  my $client  = $self->client or return;
   my $options = ($client && $client->get_options) // {};
 
   #  nothing to do if there's no client or if tracing is disabled

@@ -22,7 +22,7 @@ sub _call_on_hub ($method, @args) {
 
 sub _init_and_bind ($options) {
   my $hub    = Sentry::Hub->get_current_hub();
-  my $client = Sentry::Client->new(_options => $options);
+  my $client = $options->{dsn} ? Sentry::Client->new(_options => $options) : undef;
   $hub->bind_client($client);
 }
 
