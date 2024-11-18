@@ -11,7 +11,6 @@ use Mojo::Exception;
 use Mojo::Home;
 use Mojo::JSON;
 use Sentry::Stacktrace;
-use Mock::Sentry::SourceFileRegistry;
 use Test::Exception;
 use Test::Spec;
 

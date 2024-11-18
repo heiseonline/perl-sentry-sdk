@@ -6,7 +6,7 @@ use Mojo::Util 'dumper';
 
 has content    => undef;
 has line_count => 5;
-has _lines     => sub ($self) { [split(/\n/, $self->content)] };
+has _lines     => sub ($self) { [split(/\n/, $self->content // '')] };
 
 sub _get_lower_bound ($self, $line) {
   return [] if $line < 0;

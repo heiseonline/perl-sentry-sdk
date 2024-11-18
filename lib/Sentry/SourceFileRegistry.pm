@@ -9,16 +9,16 @@ use Sentry::SourceFileRegistry::ContextLine;
 has _cache => sub { Sentry::Cache->get_instance };
 
 sub _get_cached_context_line ($self, $file) {
-  my $context = $self->_cache->get($file);
+  if (!$self->_cache->exists($file)) {
+    my $content = -e $file ? Mojo::File->new($file)->slurp : undef;
 
-  if (!$context) {
-    my $content = -e $file ? Mojo::File->new($file)->slurp : '';
-    $context
+    my $context
       = Sentry::SourceFileRegistry::ContextLine->new(content => $content);
+
     $self->_cache->set($file, $context);
   }
 
-  return $context;
+  return $self->_cache->get($file);
 }
 
 sub get_context_lines ($self, $file, $line) {

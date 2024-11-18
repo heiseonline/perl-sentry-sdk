@@ -18,4 +18,9 @@ sub get ($self, $key) {
   return $self->_cache->{$key};
 }
 
+# `has` is taken by Mojo::Base, so we have to use a different name
+sub exists ($self, $key) {
+  return exists $self->_cache->{$key};
+}
+
 1;
