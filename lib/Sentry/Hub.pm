@@ -8,7 +8,7 @@ use Sentry::Severity;
 use Sentry::Tracing::SamplingMethod;
 use Sentry::Tracing::Transaction;
 use Sentry::Util qw(uuid4);
-use Time::HiRes qw(time);
+use Time::HiRes  qw(time);
 use Try::Tiny;
 
 my $Instance;

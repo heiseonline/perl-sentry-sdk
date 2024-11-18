@@ -6,7 +6,7 @@ use Readonly;
 use Sentry::Tracing::Status;
 use Sentry::Tracing::Transaction;
 use Sentry::Util qw(uuid4);
-use Time::HiRes qw(time);
+use Time::HiRes  qw(time);
 
 Readonly my $SPAN_ID_LENGTH => 16;
 
