@@ -20,7 +20,7 @@ sub _map_file_to_context ($self) {
 }
 
 sub _relative_filename ($self) {
-    return Mojo::File::path($self->filename)->to_rel($self->_home)->to_string;
+  return Mojo::File::path($self->filename)->to_rel($self->_home)->to_string;
 }
 
 sub TO_JSON ($self) {
