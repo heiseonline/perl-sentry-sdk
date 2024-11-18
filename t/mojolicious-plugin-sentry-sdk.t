@@ -89,6 +89,8 @@ describe 'Mojolicious::Plugin::SentrySDK' => sub {
     is ref($http->requests->[1]{body}), '';
 
     ok exists $http->requests->[0]{body}{exception};
+
+    is $http->requests->[0]{body}{level}, Sentry::Severity->Error;
   };
 
   it 'registers breadcrumbs' => sub {
