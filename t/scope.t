@@ -89,6 +89,20 @@ describe 'Sentry::Hub::Scope' => sub {
       lives_ok { Sentry::Hub::Scope->new->set_extras({ foo => 'bar' }) };
     };
   };
+
+  describe 'add_breadcrumb' => sub {
+    it 'limits breadcrumb items' => sub {
+      local $ENV{SENTRY_MAX_BREADCRUMBS} = 2;
+
+      $scope->add_breadcrumb({ message => 'foo' });
+      $scope->add_breadcrumb({ message => 'bar' });
+      $scope->add_breadcrumb({ message => 'baz' });
+
+      is scalar $scope->breadcrumbs->@*,      2;
+      is $scope->breadcrumbs->[0]->{message}, 'bar';
+      is $scope->breadcrumbs->[1]->{message}, 'baz';
+    };
+  };
 };
 
 runtests;
