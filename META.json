@@ -98,7 +98,7 @@
          "web" : "https://github.com/heiseonline/perl-sentry-sdk"
       }
    },
-   "version" : "1.3.4",
+   "version" : "1.3.5",
    "x_contributors" : [
       "bsd <bsd@heise.de>",
       "Michael Budde <mbu@jobindex.dk>",
