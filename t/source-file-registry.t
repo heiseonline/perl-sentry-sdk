@@ -24,7 +24,6 @@ describe 'Sentry::SDK' => sub {
 
   describe 'get_context_lines()' => sub {
     it 'does not throw if file does not exist' => sub {
-      warn dumper $registry;
       my $lines = $registry->get_context_lines('does-not-exist', 1);
       $registry->get_context_lines('does-not-exist', 1);
     };
