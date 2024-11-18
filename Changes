@@ -3,6 +3,8 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+1.3.7  2024-11-18 15:54:49 CET
+
   - Fixed app detection.
 
 1.3.6  2024-11-18 15:34:52 CET
