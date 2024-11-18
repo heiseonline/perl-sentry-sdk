@@ -11,6 +11,7 @@
 -sbt=2   # High square bracket tightness
 -wn      # Weld nested containers
 -isbc    # Don't indent comments without leading space
+-nst     # Don't output to STDOUT
 -xci
 
 -fsb='# prettier-ignore-start'

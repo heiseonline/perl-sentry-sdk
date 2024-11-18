@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cpanm -nq Perl::Tidy
+
+FILES=$(git ls-files t lib)
+
+for FILE in $FILES; do
+  echo "Tidying $FILE"
+  perltidy -b -bext='/' -bm=move "$FILE"
+done
