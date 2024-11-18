@@ -1,6 +1,8 @@
 package Sentry::Stacktrace::Frame;
 use Mojo::Base -base, -signatures;
 
+use Config qw(%Config);
+
 use Mojo::Home;
 use Mojo::File;
 use Sentry::SourceFileRegistry;
@@ -10,7 +12,9 @@ has _source_file_registry => sub { Sentry::SourceFileRegistry->new };
 has _home                 => sub { Mojo::Home->new->detect };
 
 sub _is_in_app ($self) {
-  return $self->filename !~ /\.cpan\//
+  return
+       $self->filename !~ /\.cpan\//
+    && index($self->filename, $Config{siteprefix}) == -1
     && index($self->filename, $self->_home) > -1;
 }
 
