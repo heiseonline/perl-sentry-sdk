@@ -3,6 +3,9 @@ Revision history for Sentry-SDK
 
 {{$NEXT}}
 
+  - Fixed several runtime errors.
+  - Added missing relative filename to the stacktrace.
+
 1.3.3  2023-11-07 11:04:33 CET
 
   - Fix: add missing dep
