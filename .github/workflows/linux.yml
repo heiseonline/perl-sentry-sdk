@@ -17,7 +17,7 @@ jobs:
     container:
       image: perl:${{ matrix.perl-version }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Install Dependencies
         uses: perl-actions/install-with-cpanm@v1
         with:
