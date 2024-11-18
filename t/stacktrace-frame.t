@@ -44,6 +44,12 @@ describe 'Sentry::Stacktrace::Frame' => sub {
     ok !$frame_json->{in_app};
   };
 
+  it 'correctly identifies local frames as in-app' => sub {
+    $frame->filename('lib/My/Module.pm');
+    $frame_json = Mojo::JSON::decode_json Mojo::JSON::encode_json $frame;
+    ok $frame_json->{in_app};
+  };
+
   it 'has file context' => sub {
     is $frame_json->{pre_context},  'pre context';
     is $frame_json->{context_line}, 'context line';
