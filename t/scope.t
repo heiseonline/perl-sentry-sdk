@@ -40,17 +40,18 @@ describe 'Sentry::Hub::Scope' => sub {
     };
 
     describe 'level' => sub {
-      it 'defaults to level "info"' => sub {
+      it 'has no default level' => sub {
         my $event = $scope->apply_to_event({});
 
-        is $event->{level}, Sentry::Severity->Info;
+        is $event->{level}, undef;
       };
 
-      it 'does not override the event level' => sub {
+      it 'overrides the event level' => sub {
+        $scope->set_level(Sentry::Severity->Warning);
         my $event
           = $scope->apply_to_event({ level => Sentry::Severity->Fatal });
 
-        is $event->{level}, Sentry::Severity->Fatal;
+        is $event->{level}, Sentry::Severity->Warning;
       };
     };
   };
