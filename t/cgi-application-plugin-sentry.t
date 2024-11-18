@@ -111,7 +111,7 @@ describe 'CGI::Application::Plugin::Sentry' => sub {
     it 'set tags' => sub {
       my $event = $http->requests->[0]{body};
 
-      is $event->{tags}{bla},         'blubb';
+      is $event->{tags}{bla}, 'blubb';
     };
 
     it 'send a message to sentry' => sub {

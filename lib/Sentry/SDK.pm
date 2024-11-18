@@ -21,8 +21,9 @@ sub _call_on_hub ($method, @args) {
 }
 
 sub _init_and_bind ($options) {
-  my $hub    = Sentry::Hub->get_current_hub();
-  my $client = $options->{dsn} ? Sentry::Client->new(_options => $options) : undef;
+  my $hub = Sentry::Hub->get_current_hub();
+  my $client
+    = $options->{dsn} ? Sentry::Client->new(_options => $options) : undef;
   $hub->bind_client($client);
 }
 
@@ -54,7 +55,7 @@ sub capture_event ($package, $event, $capture_context = undef) {
 }
 
 sub capture_exception ($package, $exception, $capture_context = undef) {
-  _call_on_hub('capture_exception', $exception, 
+  _call_on_hub('capture_exception', $exception,
     { capture_context => ref($capture_context) ? $capture_context : undef, });
 }
 

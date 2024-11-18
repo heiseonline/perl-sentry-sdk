@@ -1,9 +1,9 @@
 package Sentry::Util;
 use Mojo::Base -strict, -signatures;
 
-use Exporter qw(import);
+use Exporter     qw(import);
 use Mojo::Loader qw(load_class);
-use Mojo::Util qw(dumper monkey_patch);
+use Mojo::Util   qw(dumper monkey_patch);
 use UUID::Tiny ':std';
 
 our @EXPORT_OK = qw(uuid4 truncate merge around restore_original);
@@ -45,7 +45,7 @@ sub around ($package, $method, $cb) {
 }
 
 sub restore_original ($package, $method) {
-  my $key = $package . '::' . $method;
+  my $key  = $package . '::' . $method;
   my $orig = $Patched{$key} or return;
   monkey_patch $package, $method, $orig;
   delete $Patched{$key};

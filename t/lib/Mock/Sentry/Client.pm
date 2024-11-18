@@ -4,8 +4,12 @@ use Mojo::Base -base, -signatures;
 # has [qw(capture_message capture_event capture_exception)];
 has [qw(_captured_message)];
 
-sub capture_message ($self, $message, $level = undef, $hint = undef,
-  $scope = undef) {
+sub capture_message (
+  $self, $message,
+  $level = undef,
+  $hint  = undef,
+  $scope = undef
+) {
   $self->_captured_message(
     { message => $message, level => $level, hint => $hint, scope => $scope });
 }

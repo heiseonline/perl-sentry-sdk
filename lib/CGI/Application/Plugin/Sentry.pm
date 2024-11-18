@@ -40,9 +40,9 @@ CGI::Application->add_callback(
       $scope->add_breadcrumb({ message => 'prerun' });
     });
 
-    my $method = $c->query->request_method;
+    my $method           = $c->query->request_method;
     my $transaction_name = "$method $rm";
-    my $transaction = Sentry::SDK->start_transaction(
+    my $transaction      = Sentry::SDK->start_transaction(
       {
         name    => $transaction_name,
         op      => 'http.server',

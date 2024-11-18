@@ -1,22 +1,17 @@
 {
   '_metadata' => {
     'sdk' => {
-      'name' => 'sentry.perl',
+      'name'     => 'sentry.perl',
       'packages' => [],
-      'version' => bless( {
-        'original' => 'v1.1.1',
-        'qv' => 1,
-        'version' => [
-          1,
-          1,
-          1
-        ]
-      }, 'version' )
+      'version'  => bless(
+        { 'original' => 'v1.1.1', 'qv' => 1, 'version' => [1, 1, 1] },
+        'version'
+      )
     }
   },
   'default_integrations' => [],
-  'dsn' => 'DSN from env',
-  'environment' => 'environment from env',
-  'release' => 'release from env',
-  'traces_sample_rate' => '0.123'
+  'dsn'                  => 'DSN from env',
+  'environment'          => 'environment from env',
+  'release'              => 'release from env',
+  'traces_sample_rate'   => '0.123'
 }

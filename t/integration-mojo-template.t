@@ -44,7 +44,7 @@ describe 'Sentry::Integration::MojoTemplate' => sub {
     is scalar $span->spans->@*, 1;
     my %tmpl_span = $span->spans->[0]->%*;
     is $tmpl_span{description}, 'tmpl foo';
-    is $tmpl_span{op}, 'mojo.template';
+    is $tmpl_span{op},          'mojo.template';
     is_deeply $tmpl_span{data}, { compiled => 'no' };
   };
 
@@ -54,13 +54,16 @@ describe 'Sentry::Integration::MojoTemplate' => sub {
     my $span  = Sentry::Tracing::Span->new();
     $scope->set_span($span);
 
-    my $mt = Mojo::Template->new(name => 'tmpl foo', namespace => 'Mojo::Template::Sandbox::deadbeef');
+    my $mt = Mojo::Template->new(
+      name      => 'tmpl foo',
+      namespace => 'Mojo::Template::Sandbox::deadbeef'
+    );
     my $output = $mt->render('<% die "boom"; %>');
 
     is ref $output, 'Mojo::Exception';
     my ($module, $filename, undef, $subroutine) = $output->frames->[0]->@*;
-    is $module, '';
-    is $filename, 'tmpl foo';
+    is $module,     '';
+    is $filename,   'tmpl foo';
     is $subroutine, '';
   };
 
@@ -70,13 +73,16 @@ describe 'Sentry::Integration::MojoTemplate' => sub {
     my $span  = Sentry::Tracing::Span->new();
     $scope->set_span($span);
 
-    my $mt = Mojo::Template->new(name => 'tmpl foo', namespace => 'Mojo::Template::Sandbox::deadbeef');
+    my $mt = Mojo::Template->new(
+      name      => 'tmpl foo',
+      namespace => 'Mojo::Template::Sandbox::deadbeef'
+    );
     my $output = $mt->render('<% die "boom"; %>');
 
     is ref $output, 'Mojo::Exception';
     my ($module, $filename, undef, $subroutine) = $output->frames->[0]->@*;
-    is $module, 'Mojo::Template::Sandbox::deadbeef';
-    is $filename, 'tmpl foo';
+    is $module,     'Mojo::Template::Sandbox::deadbeef';
+    is $filename,   'tmpl foo';
     is $subroutine, 'Mojo::Template::__ANON__';
   };
 };

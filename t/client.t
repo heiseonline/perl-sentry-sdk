@@ -94,11 +94,8 @@ describe 'Sentry::Client' => sub {
       my %tags  = (foo => 'bar', bar => 'baz');
       my $scope = Sentry::Hub::Scope->new(tags => {%tags});
       my $event = { event => 'happened' };
-      $client->capture_event(
-        $event,
-        { capture_context => { tags => { foo => 'baz' } } },
-        $scope
-      );
+      $client->capture_event($event,
+        { capture_context => { tags => { foo => 'baz' } } }, $scope);
 
       is $transport->events_sent->@*, 1, 'Event was sent';
 
