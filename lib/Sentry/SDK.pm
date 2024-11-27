@@ -28,7 +28,7 @@ sub _init_and_bind ($options) {
 }
 
 sub init ($package, $options = {}) {
-  $options->{default_integrations} //= [];
+  $options->{default_integrations} //= 1;
   $options->{dsn}                  //= $ENV{SENTRY_DSN};
   $options->{traces_sample_rate}   //= $ENV{SENTRY_TRACES_SAMPLE_RATE};
   $options->{release}              //= $ENV{SENTRY_RELEASE};

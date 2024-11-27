@@ -14,7 +14,7 @@
       }, 'version' )
     }
   },
-  'default_integrations' => [],
+  'default_integrations' => 1,
   'dsn' => 'DSN from env',
   'environment' => 'environment from env',
   'release' => 'release from env',
