@@ -1,7 +1,6 @@
 package Sentry::Tracing::Status;
 use Mojo::Base -base, -signatures;
 
-use experimental qw(switch);
 use HTTP::Status qw(:constants);
 
 # The operation completed successfully.

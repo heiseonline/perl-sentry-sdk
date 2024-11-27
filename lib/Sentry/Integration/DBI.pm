@@ -31,7 +31,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
 
       if ($self->tracing && (my $parent_span = $hub->get_scope()->get_span)) {
         $span = $parent_span->start_child({
-          op => 'sql.query', description => $statement, });
+          op => 'db.sql.query', description => $statement, });
       }
 
       my $value = $orig->($dbh, $statement, @args);
@@ -61,7 +61,7 @@ sub setup_once ($self, $add_global_event_processor, $get_current_hub) {
 
       if ($self->tracing && (my $parent_span = $hub->get_scope()->get_span)) {
         $span = $parent_span->start_child({
-          op          => 'sql.query',
+          op          => 'db.sql.query',
           description => $statement,
           data        => { args => [@args], },
         });
