@@ -121,7 +121,7 @@ sub run ($self, $cb) {
 }
 
 sub sample ($self, $transaction, $sampling_context) {
-  my $client  = $self->client or return;
+  my $client  = $self->client;
   my $options = ($client && $client->get_options) // {};
 
   #  nothing to do if there's no client or if tracing is disabled
