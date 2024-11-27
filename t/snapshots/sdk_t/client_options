@@ -15,7 +15,7 @@
     }
   },
   'debug' => 1,
-  'default_integrations' => [],
+  'default_integrations' => 1,
   'dsn' => 'abc',
   'environment' => 'my env',
   'release' => 'my release',

@@ -23,7 +23,7 @@ has scope        => sub { Sentry::Hub::Scope->new };
 has integrations => sub ($self) { $self->_options->{integrations} // [] };
 
 sub setup_integrations ($self) {
-  Sentry::Integration->setup($self->integrations);
+  Sentry::Integration->setup($self->integrations, $self->_options->{default_integrations} // 1)
 }
 
 #  (alternatively normal constructor) This takes typically an object with options + dsn.

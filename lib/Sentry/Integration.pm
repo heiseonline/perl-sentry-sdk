@@ -9,16 +9,18 @@ use Sentry::Integration::MojoUserAgent;
 use Sentry::Integration::MojoTemplate;
 use Sentry::Integration::LwpUserAgent;
 
-my @Global_integrations = (
-  Sentry::Integration::DieHandler->new,
-  Sentry::Integration::DBI->new,
-  Sentry::Integration::MojoUserAgent->new,
-  Sentry::Integration::MojoTemplate->new,
-  Sentry::Integration::LwpUserAgent->new,
-);
+sub default_integrations {
+  return (
+    Sentry::Integration::DieHandler->new,
+    Sentry::Integration::DBI->new,
+    Sentry::Integration::MojoUserAgent->new,
+    Sentry::Integration::MojoTemplate->new,
+    Sentry::Integration::LwpUserAgent->new,
+  );
+}
 
-sub setup ($package, $custom_integrations = []) {
-  my @all_integrations = (@Global_integrations, $custom_integrations->@*);
+sub setup ($package, $custom_integrations = [], $use_defaults = 1) {
+  my @all_integrations = ($use_defaults ? default_integrations() : (), $custom_integrations->@*);
   foreach my $integration (grep { !$_->initialized } @all_integrations) {
     $integration->setup_once(
       Sentry::Hub::Scope->can('add_global_event_processor'),
